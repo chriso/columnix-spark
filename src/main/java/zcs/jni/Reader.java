@@ -8,6 +8,8 @@ public class Reader implements AutoCloseable {
     private long ptr;
 
     private ColumnType[] columnTypes;
+    private ColumnEncoding[] columnEncodings;
+    private ColumnCompression[] columnCompressions;
 
     /**
      * Read data from a file.
@@ -18,6 +20,8 @@ public class Reader implements AutoCloseable {
     public Reader(String path) throws Exception {
         ptr = nativeNew(path);
         columnTypes = ColumnType.values();
+        columnEncodings = ColumnEncoding.values();
+        columnCompressions = ColumnCompression.values();
     }
 
     /**
@@ -45,12 +49,38 @@ public class Reader implements AutoCloseable {
      *
      * @param column Index of the column
      * @return Type of the column
-     * @throws NullPointerException     If the reader is closed
-     * @throws IllegalArgumentException If the index is out of bounds
+     * @throws NullPointerException      If the reader is closed
+     * @throws IndexOutOfBoundsException If the index is out of bounds
      */
-    public ColumnType columnType(int column) throws NullPointerException, IllegalArgumentException {
+    public ColumnType columnType(int column) throws NullPointerException, IndexOutOfBoundsException {
         int id = nativeColumnType(ptr, column);
         return columnTypes[id];
+    }
+
+    /**
+     * Get a column's encoding type.
+     *
+     * @param column Index of the column
+     * @return Encoding of the column
+     * @throws NullPointerException      If the reader is closed
+     * @throws IndexOutOfBoundsException If the index is out of bounds
+     */
+    public ColumnEncoding columnEncoding(int column) throws NullPointerException, IndexOutOfBoundsException {
+        int id = nativeColumnEncoding(ptr, column);
+        return columnEncodings[id];
+    }
+
+    /**
+     * Get a column's compression type.
+     *
+     * @param column Index of the column
+     * @return Encoding of the column
+     * @throws NullPointerException      If the reader is closed
+     * @throws IndexOutOfBoundsException If the index is out of bounds
+     */
+    public ColumnCompression columnCompression(int column) throws NullPointerException, IndexOutOfBoundsException {
+        int id = nativeColumnCompression(ptr, column);
+        return columnCompressions[id];
     }
 
     private native long nativeNew(String path);
@@ -60,4 +90,8 @@ public class Reader implements AutoCloseable {
     private native long nativeColumnCount(long ptr);
 
     private native int nativeColumnType(long ptr, int index);
+
+    private native int nativeColumnEncoding(long ptr, int index);
+
+    private native int nativeColumnCompression(long ptr, int index);
 }
