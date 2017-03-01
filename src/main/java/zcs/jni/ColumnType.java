@@ -1,7 +1,7 @@
 package zcs.jni;
 
 public enum ColumnType {
-    Bool,
+    Boolean,
     Int,
     Long,
     String

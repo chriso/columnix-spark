@@ -40,8 +40,38 @@ public class Reader implements AutoCloseable {
      * @return Column count
      * @throws NullPointerException If the reader is closed
      */
-    public long columnCount() {
+    public long columnCount() throws NullPointerException {
         return nativeColumnCount(ptr);
+    }
+
+    /**
+     * Count the number of rows in the file.
+     *
+     * @return Row count
+     * @throws NullPointerException If the reader is closed
+     */
+    public long rowCount() throws NullPointerException {
+        return nativeRowCount(ptr);
+    }
+
+    /**
+     * Rewind the reader.
+     *
+     * @throws NullPointerException If the reader is closed
+     */
+    public void rewind() throws NullPointerException {
+        nativeRewind(ptr);
+    }
+
+    /**
+     * Advance the reader to the next row.
+     *
+     * @return True if there is another row to read, and false otherwise
+     * @throws NullPointerException If the reader is closed
+     * @throws Exception            If an error occurred during iteration
+     */
+    public boolean next() throws Exception {
+        return nativeNext(ptr);
     }
 
     /**
@@ -83,15 +113,96 @@ public class Reader implements AutoCloseable {
         return columnCompressions[id];
     }
 
+    /**
+     * Check if a column value is null at the reader's current position.
+     *
+     * @param column Index of the column
+     * @return True if the column value is null, and false otherwise
+     * @throws NullPointerException      If the reader is closed
+     * @throws IndexOutOfBoundsException If the index is out of bounds
+     * @throws Exception                 If something goes wrong
+     */
+    public boolean isNull(int column) throws Exception {
+        return nativeIsNull(ptr, column);
+    }
+
+    /**
+     * Get a boolean value from the current row.
+     *
+     * @param column Index of the column
+     * @return Column value
+     * @throws NullPointerException      If the reader is closed
+     * @throws IndexOutOfBoundsException If the index is out of bounds
+     * @throws Exception                 If something goes wrong
+     */
+    public boolean getBoolean(int column) throws Exception {
+        return nativeGetBoolean(ptr, column);
+    }
+
+    /**
+     * Get an int value from the current row.
+     *
+     * @param column Index of the column
+     * @return Column value
+     * @throws NullPointerException      If the reader is closed
+     * @throws IndexOutOfBoundsException If the index is out of bounds
+     * @throws Exception                 If something goes wrong
+     */
+    public int getInt(int column) throws Exception {
+        return nativeGetInt(ptr, column);
+    }
+
+    /**
+     * Get a long value from the current row.
+     *
+     * @param column Index of the column
+     * @return Column value
+     * @throws NullPointerException      If the reader is closed
+     * @throws IndexOutOfBoundsException If the index is out of bounds
+     * @throws Exception                 If something goes wrong
+     */
+    public long getLong(int column) throws Exception {
+        return nativeGetLong(ptr, column);
+    }
+
+    /**
+     * Get a string value from the current row.
+     *
+     * @param column Index of the column
+     * @return Column value
+     * @throws NullPointerException      If the reader is closed
+     * @throws IndexOutOfBoundsException If the index is out of bounds
+     * @throws Exception                 If something goes wrong
+     */
+    public String getString(int column) throws Exception {
+        return nativeGetString(ptr, column);
+    }
+
     private native long nativeNew(String path);
 
     private native void nativeFree(long ptr);
 
     private native long nativeColumnCount(long ptr);
 
+    private native long nativeRowCount(long ptr);
+
+    private native void nativeRewind(long ptr);
+
+    private native boolean nativeNext(long ptr);
+
     private native int nativeColumnType(long ptr, int index);
 
     private native int nativeColumnEncoding(long ptr, int index);
 
     private native int nativeColumnCompression(long ptr, int index);
+
+    private native boolean nativeIsNull(long ptr, int index);
+
+    private native boolean nativeGetBoolean(long ptr, int index);
+
+    private native int nativeGetInt(long ptr, int index);
+
+    private native int nativeGetLong(long ptr, int index);
+
+    private native String nativeGetString(long ptr, int index);
 }
