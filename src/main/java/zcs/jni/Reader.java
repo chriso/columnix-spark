@@ -1,5 +1,20 @@
 package zcs.jni;
 
+/**
+ * Reader reads data from a zcs file.
+ *
+ * Example (read long values from column 0):
+ *
+ *    try (Reader reader = new Reader(path)) {
+ *        while (reader.next()) {
+ *            if (reader.isNull(0)) {
+ *                System.out.println("(null)")
+ *            } else {
+ *                System.out.println(reader.getLong(0))
+ *            }
+ *        }
+ *    }
+ */
 public class Reader implements AutoCloseable {
     static {
         System.loadLibrary("zcs");
@@ -19,6 +34,8 @@ public class Reader implements AutoCloseable {
      */
     public Reader(String path) throws Exception {
         ptr = nativeNew(path);
+
+        // cache id => enum lookups
         columnTypes = ColumnType.values();
         columnEncodings = ColumnEncoding.values();
         columnCompressions = ColumnCompression.values();
