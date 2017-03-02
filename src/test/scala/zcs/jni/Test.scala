@@ -6,10 +6,10 @@ import org.scalatest.{FlatSpec, Matchers}
 
 trait Test extends FlatSpec with Matchers {
 
-  def withTemporaryFile[R](block: Path => R): R = {
-    val path = Files.createTempFile("zcs", null)
-    try block(path)
-    finally Files.delete(path)
+  def test[R](block: Path => R): R = {
+    val file = Files.createTempFile("zcs", null)
+    try block(file)
+    finally Files.delete(file)
   }
 
   def withWriter[R](path: Path)(block: Writer => R): R = {
