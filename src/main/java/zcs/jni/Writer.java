@@ -66,6 +66,10 @@ public class Writer implements AutoCloseable {
                 compressionLevel);
     }
 
+    public void addColumn(ColumnType type) throws Exception {
+        addColumn(type, ColumnEncoding.None, ColumnCompression.None, 0);
+    }
+
     /**
      * Write a null value to the specified column.
      *

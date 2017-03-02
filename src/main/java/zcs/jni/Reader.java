@@ -219,7 +219,7 @@ public class Reader implements AutoCloseable {
 
     private native int nativeGetInt(long ptr, int index);
 
-    private native int nativeGetLong(long ptr, int index);
+    private native long nativeGetLong(long ptr, int index);
 
     private native String nativeGetString(long ptr, int index);
 }
