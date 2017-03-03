@@ -15,6 +15,8 @@ case class Relation(path: String)
 
   def sparkContext: SparkContext = sparkSession.sparkContext
 
+  override val needConversion: Boolean = false
+
   val schema: StructType = inferSchema
 
   private def inferSchema: StructType = {
@@ -47,6 +49,7 @@ case class Relation(path: String)
   def buildScan(requiredColumns: Array[String]): RDD[Row] = {
     val scanColumns = requiredColumns map columnByName
     val scanSchema = StructType(scanColumns map fieldsByIndex)
-    new ZCSRDD(sparkContext, path, scanColumns, scanSchema, rowGroups)
+    val rdd = new ZCSRDD(sparkContext, path, scanColumns, scanSchema, rowGroups)
+    rdd.asInstanceOf[RDD[Row]]
   }
 }

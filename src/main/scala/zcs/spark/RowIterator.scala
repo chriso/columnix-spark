@@ -1,7 +1,6 @@
 package zcs.spark
 
-import org.apache.spark.sql.Row
-import org.apache.spark.sql.catalyst.encoders.RowEncoder
+import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.expressions.SpecificInternalRow
 import org.apache.spark.sql.types._
 import org.apache.spark.unsafe.types.UTF8String
@@ -11,7 +10,7 @@ import zcs.jni.Reader
 case class RowIterator(context: TaskContext,
                        reader: Reader,
                        columns: Array[Int],
-                       schema: StructType) extends Iterator[Row] {
+                       schema: StructType) extends Iterator[InternalRow] {
 
   private[this] val fieldTypes = schema.fields.map(_.dataType)
 
@@ -19,9 +18,7 @@ case class RowIterator(context: TaskContext,
 
   private[this] val mutableRow = new SpecificInternalRow(fieldTypes)
 
-  private[this] val encoder = RowEncoder(schema).resolveAndBind()
-
-  def next: Row = {
+  def next: InternalRow = {
     for ((in, out) <- indices) {
       if (reader.isNull(in))
         mutableRow.setNullAt(out)
@@ -35,7 +32,7 @@ case class RowIterator(context: TaskContext,
       }
     }
 
-    encoder.fromRow(mutableRow)
+    mutableRow
   }
 
   def hasNext: Boolean = {
