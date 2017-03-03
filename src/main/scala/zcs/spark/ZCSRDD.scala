@@ -11,6 +11,7 @@ import zcs.jni.Reader
 
 class ZCSRDD(sc: SparkContext,
              reader: Reader,
+             columns: Array[Int],
              schema: StructType,
              partitions: Array[Partition]) extends RDD[Row](sc, Nil) {
 
@@ -23,28 +24,33 @@ class ZCSRDD(sc: SparkContext,
 
     context.addTaskCompletionListener(_ => close())
 
-    RowIterator(context, reader, schema: StructType)
+    RowIterator(context, reader, columns, schema)
   }
 }
 
-case class RowIterator(context: TaskContext, reader: Reader, schema: StructType) extends Iterator[Row] {
+case class RowIterator(context: TaskContext,
+                       reader: Reader,
+                       columns: Array[Int],
+                       schema: StructType) extends Iterator[Row] {
 
   private[this] val fieldTypes = schema.fields.map(_.dataType)
-  private[this] val indices = fieldTypes.indices.toArray
+
+  private[this] val indices = columns.zipWithIndex
+
   private[this] val mutableRow = new SpecificInternalRow(fieldTypes)
 
   private[this] val encoder = RowEncoder(schema).resolveAndBind()
 
   def next: Row = {
-    for (i <- indices) {
-      if (reader.isNull(i))
-        mutableRow.setNullAt(i)
+    for ((in, out) <- indices) {
+      if (reader.isNull(in))
+        mutableRow.setNullAt(out)
       else {
-        fieldTypes(i) match {
-          case BooleanType => mutableRow.setBoolean(i, reader.getBoolean(i))
-          case IntegerType => mutableRow.setInt(i, reader.getInt(i))
-          case LongType => mutableRow.setLong(i, reader.getLong(i))
-          case StringType => mutableRow.update(i, UTF8String.fromString(reader.getString(i)))
+        fieldTypes(out) match {
+          case BooleanType => mutableRow.setBoolean(out, reader.getBoolean(in))
+          case IntegerType => mutableRow.setInt(out, reader.getInt(in))
+          case LongType => mutableRow.setLong(out, reader.getLong(in))
+          case StringType => mutableRow.update(out, UTF8String.fromString(reader.getString(in)))
         }
       }
     }
@@ -56,7 +62,6 @@ case class RowIterator(context: TaskContext, reader: Reader, schema: StructType)
     if (context.isInterrupted)
       throw new TaskKilledException
 
-    // FIXME: decref once this is false, in a finally block
     reader.next
   }
 }

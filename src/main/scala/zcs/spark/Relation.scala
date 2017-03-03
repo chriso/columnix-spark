@@ -1,17 +1,19 @@
 package zcs.spark
 
-import org.apache.spark.Partition
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.sources.{BaseRelation, TableScan}
+import org.apache.spark.sql.sources.{BaseRelation, PrunedScan}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{Row, SQLContext, SparkSession}
+import org.apache.spark.{Partition, SparkContext}
 import zcs.jni.{ColumnType, Reader}
 
 case class Relation(reader: Reader)
                    (@transient val sparkSession: SparkSession)
-  extends BaseRelation with TableScan {
+  extends BaseRelation with PrunedScan {
 
   def sqlContext: SQLContext = sparkSession.sqlContext
+
+  def sparkContext: SparkContext = sparkSession.sparkContext
 
   val schema: StructType = {
     val fields = for {
@@ -23,6 +25,10 @@ case class Relation(reader: Reader)
     StructType(fields)
   }
 
+  val columnByName = schema.fields.map(_.name).zipWithIndex.toMap
+
+  val fieldsByIndex = schema.fields.toIndexedSeq
+
   val rowGroups: Array[Partition] = Array(RowGroup(0)) // FIXME
 
   private def fieldType(columnType: ColumnType) =
@@ -33,6 +39,9 @@ case class Relation(reader: Reader)
       case ColumnType.String => StringType
     }
 
-  def buildScan: RDD[Row] =
-    new ZCSRDD(sparkSession.sparkContext, reader, schema, rowGroups)
+  def buildScan(requiredColumns: Array[String]): RDD[Row] = {
+    val scanColumns = requiredColumns map columnByName
+    val scanSchema = StructType(scanColumns map fieldsByIndex)
+    new ZCSRDD(sparkContext, reader, scanColumns, scanSchema, rowGroups)
+  }
 }
