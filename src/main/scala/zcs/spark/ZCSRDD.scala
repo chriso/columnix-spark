@@ -10,7 +10,7 @@ import org.apache.spark.{Partition, SparkContext, TaskContext, TaskKilledExcepti
 import zcs.jni.Reader
 
 class ZCSRDD(sc: SparkContext,
-             reader: Reader,
+             path: String,
              columns: Array[Int],
              schema: StructType,
              partitions: Array[Partition]) extends RDD[Row](sc, Nil) {
@@ -18,7 +18,7 @@ class ZCSRDD(sc: SparkContext,
   def getPartitions: Array[Partition] = partitions
 
   def compute(split: Partition, context: TaskContext): Iterator[Row] = {
-    reader.rewind()
+    val reader = new Reader(path)
 
     def close(): Unit = logInfo("Closing reader, probably!")
 
