@@ -14,24 +14,18 @@ case class RowIterator(context: TaskContext,
 
   private[this] val fieldTypes = schema.fields.map(_.dataType)
 
-  private[this] val indices = columns.zipWithIndex
-
   private[this] val mutableRow = new SpecificInternalRow(fieldTypes)
 
-  def next: InternalRow = {
-    for ((in, out) <- indices) {
-      if (reader.isNull(in))
-        mutableRow.setNullAt(out)
-      else {
-        fieldTypes(out) match {
-          case BooleanType => mutableRow.setBoolean(out, reader.getBoolean(in))
-          case IntegerType => mutableRow.setInt(out, reader.getInt(in))
-          case LongType => mutableRow.setLong(out, reader.getLong(in))
-          case StringType => mutableRow.update(out, UTF8String.fromString(reader.getString(in)))
-        }
-      }
-    }
+  private[this] val setters = columns.zipWithIndex.map { case (in, out) => makeSetter(in, out) }
 
+  private[this] val columnCount = columns.length
+
+  def next: InternalRow = {
+    var i = 0
+    while (i < columnCount) {
+      setters(i)()
+      i += 1
+    }
     mutableRow
   }
 
@@ -40,5 +34,25 @@ case class RowIterator(context: TaskContext,
       throw new TaskKilledException
 
     reader.next
+  }
+
+  private def makeSetter(in: Int, out: Int) = {
+    fieldTypes(out) match {
+      case BooleanType =>
+        () => if (reader.isNull(in)) mutableRow.setNullAt(in)
+        else mutableRow.setBoolean(out, reader.getBoolean(in))
+
+      case IntegerType =>
+        () => if (reader.isNull(in)) mutableRow.setNullAt(in)
+        else mutableRow.setInt(out, reader.getInt(in))
+
+      case LongType =>
+        () => if (reader.isNull(in)) mutableRow.setNullAt(in)
+        else mutableRow.setLong(out, reader.getLong(in))
+
+      case StringType =>
+        () => if (reader.isNull(in)) mutableRow.setNullAt(in)
+        else mutableRow.update(out, UTF8String.fromString(reader.getString(in)))
+    }
   }
 }
