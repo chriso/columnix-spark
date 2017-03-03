@@ -1,5 +1,7 @@
 package zcs.jni;
 
+import java.io.Serializable;
+
 /**
  * Reader reads data from a zcs file.
  *
@@ -15,7 +17,7 @@ package zcs.jni;
  *        }
  *    }
  */
-public class Reader implements AutoCloseable {
+public class Reader implements AutoCloseable, Serializable {
     static {
         System.loadLibrary("zcs");
     }
@@ -57,7 +59,7 @@ public class Reader implements AutoCloseable {
      * @return Column count
      * @throws NullPointerException If the reader is closed
      */
-    public long columnCount() throws NullPointerException {
+    public int columnCount() throws NullPointerException {
         return nativeColumnCount(ptr);
     }
 
@@ -199,7 +201,7 @@ public class Reader implements AutoCloseable {
 
     private native void nativeFree(long ptr);
 
-    private native long nativeColumnCount(long ptr);
+    private native int nativeColumnCount(long ptr);
 
     private native long nativeRowCount(long ptr);
 
