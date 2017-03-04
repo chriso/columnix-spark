@@ -1,5 +1,7 @@
 package zcs.jni;
 
+import zcs.jni.predicates.Predicate;
+
 /**
  * Reader reads data from a zcs file.
  *
@@ -27,7 +29,7 @@ public class Reader implements AutoCloseable {
     private ColumnCompression[] columnCompressions;
 
     /**
-     * Read data from a file.
+     * Read rows from a file.
      *
      * @param path Path of the file to read
      * @throws Exception If something goes wrong
@@ -35,7 +37,23 @@ public class Reader implements AutoCloseable {
     public Reader(String path) throws Exception {
         ptr = nativeNew(path);
 
-        // cache id => enum lookups
+        cacheEnumLookups();
+    }
+
+    /**
+     * Read rows that match a predicate.
+     *
+     * @param path Path of the file to read
+     * @param predicate Predicate to match rows against
+     * @throws Exception If something goes wrong
+     */
+    public Reader(String path, Predicate predicate) throws Exception {
+        ptr = nativeNewMatching(path, predicate.steal());
+
+        cacheEnumLookups();
+    }
+
+    private void cacheEnumLookups() {
         columnTypes = ColumnType.values();
         columnEncodings = ColumnEncoding.values();
         columnCompressions = ColumnCompression.values();
@@ -196,6 +214,8 @@ public class Reader implements AutoCloseable {
     }
 
     private native long nativeNew(String path);
+
+    private native long nativeNewMatching(String path, long predicate);
 
     private native void nativeFree(long ptr);
 

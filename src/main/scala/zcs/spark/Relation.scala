@@ -1,7 +1,7 @@
 package zcs.spark
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.sources.{BaseRelation, PrunedScan}
+import org.apache.spark.sql.sources.{BaseRelation, Filter, PrunedFilteredScan}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{Row, SQLContext, SparkSession}
 import org.apache.spark.{Partition, SparkContext}
@@ -9,7 +9,7 @@ import zcs.jni.{ColumnType, Reader}
 
 case class Relation(path: String)
                    (@transient val sparkSession: SparkSession)
-  extends BaseRelation with PrunedScan {
+  extends BaseRelation with PrunedFilteredScan {
 
   def sqlContext: SQLContext = sparkSession.sqlContext
 
@@ -46,10 +46,10 @@ case class Relation(path: String)
       case ColumnType.String => StringType
     }
 
-  def buildScan(requiredColumns: Array[String]): RDD[Row] = {
+  def buildScan(requiredColumns: Array[String], filters: Array[Filter]): RDD[Row] = {
     val scanColumns = requiredColumns map columnByName
     val scanSchema = StructType(scanColumns map fieldsByIndex)
-    val rdd = new ZCSRDD(sparkContext, path, scanColumns, scanSchema, rowGroups)
+    val rdd = new ZCSRDD(sparkContext, path, scanColumns, scanSchema, filters, rowGroups)
     rdd.asInstanceOf[RDD[Row]]
   }
 }
