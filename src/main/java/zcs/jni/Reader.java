@@ -1,7 +1,5 @@
 package zcs.jni;
 
-import java.io.Serializable;
-
 /**
  * Reader reads data from a zcs file.
  *
@@ -17,7 +15,7 @@ import java.io.Serializable;
  *        }
  *    }
  */
-public class Reader implements AutoCloseable, Serializable {
+public class Reader implements AutoCloseable {
     static {
         System.loadLibrary("zcs");
     }
