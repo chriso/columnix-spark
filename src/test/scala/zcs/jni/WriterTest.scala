@@ -19,7 +19,7 @@ class WriterTest extends Test {
   }
 
   it should "write files with no columns" in test { file =>
-    withWriter(file)(_.finish)
+    withWriter(file)(_.finish())
     withReader(file) { reader =>
       reader.columnCount shouldEqual 0
       reader.rowCount shouldEqual 0

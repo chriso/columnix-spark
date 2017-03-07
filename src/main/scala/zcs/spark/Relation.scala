@@ -38,7 +38,7 @@ case class Relation(path: String)
 
   val rowGroups: Array[Partition] = Array(RowGroup(0)) // FIXME
 
-  private def fieldType(columnType: ColumnType) =
+  private def fieldType(columnType: ColumnType.ColumnType) =
     columnType match {
       case ColumnType.Boolean => BooleanType
       case ColumnType.Int => IntegerType

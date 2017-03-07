@@ -59,7 +59,7 @@ package object jni {
     def collect[T: Getter](index: Int): Seq[Option[T]] = {
       reader.rewind()
       val buffer = scala.collection.mutable.ArrayBuffer.empty[Option[T]]
-      while (reader.next())
+      while (reader.next)
         buffer += get[T](index)
       buffer
     }

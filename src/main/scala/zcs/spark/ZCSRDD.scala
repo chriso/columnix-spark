@@ -20,12 +20,9 @@ class ZCSRDD(sc: SparkContext,
   def compute(split: Partition, context: TaskContext): Iterator[InternalRow] = {
 
     // FIXME: get this dynamically
-    val predicate = Some(new zcs.jni.predicates.Equals(0, 1384203753000L))
+    val predicate = Some(zcs.jni.predicates.Equals(0, 1384203753000L))
 
-    val reader = predicate match {
-      case Some(pred) => new Reader(path, pred)
-      case _ => new Reader(path)
-    }
+    val reader = new Reader(path, predicate)
 
     def close(): Unit = logInfo("Closing reader, probably!")
 
