@@ -1,14 +1,12 @@
 package zcs.jni
 
-import zcs.jni.predicates.Predicate
-
-class Reader(path: String, predicate: Option[Predicate] = None) {
+class Reader(path: String, filter: Option[Filter] = None) {
 
   System.loadLibrary("zcs")
 
-  private[this] var ptr = predicate match {
+  private[this] var ptr = filter match {
     case None => nativeNew(path)
-    case Some(p) => nativeNewMatching(path, p.steal)
+    case Some(f) => nativeNewMatching(path, Predicate.fromFilter(f))
   }
 
   def close() {

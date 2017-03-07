@@ -38,7 +38,7 @@ class Writer(path: String, rowGroupSize: Long = 1000000L) {
   @native private def nativeFinish(ptr: Long, sync: Boolean): Unit = ???
 
   @native private def nativeAddColumn(ptr: Long, `type`: Int, encoding: Int, compression: Int,
-                              compressionLevel: Int): Unit = ???
+                                      compressionLevel: Int): Unit = ???
 
   @native private def nativePutNull(ptr: Long, index: Int): Unit = ???
 
