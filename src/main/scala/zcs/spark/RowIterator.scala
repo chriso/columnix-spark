@@ -52,7 +52,7 @@ case class RowIterator(context: TaskContext,
 
       case StringType =>
         () => if (reader.isNull(in)) mutableRow.setNullAt(out)
-        else mutableRow.update(out, UTF8String.fromString(reader.getString(in)))
+        else mutableRow.update(out, UTF8String.fromBytes(reader.getStringBytes(in)))
     }
   }
 }

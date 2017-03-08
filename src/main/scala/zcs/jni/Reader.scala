@@ -45,6 +45,8 @@ class Reader(path: String, filter: Option[Filter] = None) {
 
   def getString(column: Int): String = nativeGetString(ptr, column)
 
+  def getStringBytes(column: Int): Array[Byte] = nativeGetStringBytes(ptr, column)
+
   @native private def nativeNew(path: String): Long = ???
 
   @native private def nativeNewMatching(path: String, predicate: Predicate.Pointer): Pointer = ???
@@ -74,4 +76,6 @@ class Reader(path: String, filter: Option[Filter] = None) {
   @native private def nativeGetLong(reader: Pointer, index: Int): Long = ???
 
   @native private def nativeGetString(reader: Pointer, index: Int): String = ???
+
+  @native private def nativeGetStringBytes(reader: Pointer, index: Int): Array[Byte] = ???
 }
