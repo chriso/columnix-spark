@@ -52,7 +52,7 @@ case class Relation(path: String)
     val schema = StructType(fields)
 
     val translator = FilterTranslator(columnIndexByName, fields.map(_.dataType))
-    val filter = translator.translateFilters(pushedFilters)
+    val filter = translator.translateFilters(pushedFilters: _*)
 
     val rdd = new ZCSRDD(sparkContext, path, columns, schema, filter, rowGroups)
     rdd.asInstanceOf[RDD[Row]]

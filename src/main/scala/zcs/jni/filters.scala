@@ -25,8 +25,4 @@ case class LongEquals(column: Int, value: Long) extends Filter
 
 case class LongGreaterThan(column: Int, value: Long) extends Filter
 
-case class LongGreaterThanOrEqual(column: Int, value: Long) extends Filter
-
 case class LongLessThan(column: Int, value: Long) extends Filter
-
-case class LongLessThanOrEqual(column: Int, value: Long) extends Filter

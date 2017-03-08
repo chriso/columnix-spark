@@ -16,9 +16,7 @@ class PredicateTest extends Test {
       LongEquals(0, 3L) -> Seq(3L),
       Not(LongEquals(0, 3L)) -> Seq(1L, 2L, 4L, 5L, 6L, 7L, 8L, 9L, 10L),
       LongGreaterThan(0, 7L) -> Seq(8L, 9L, 10L),
-      LongGreaterThanOrEqual(0, 7L) -> Seq(7L, 8L, 9L, 10L),
       LongLessThan(0, 3L) -> Seq(1L, 2L),
-      LongLessThanOrEqual(0, 3L) -> Seq(1L, 2L, 3L),
       Or(LongEquals(0, 3L), LongEquals(0, 7L), LongEquals(0, 9L)) -> Seq(3L, 7L, 9L),
       And(LongGreaterThan(0, 3L), LongLessThan(0, 7L)) -> Seq(4L, 5L, 6L)
     )
