@@ -1,8 +1,8 @@
 package zcs.jni
 
-class PredicateTest extends Test {
+class Predicate$Test extends Test {
 
-  behavior of "Predicate"
+  behavior of "Predicate$"
 
   it should "filter by boolean" in test { file =>
     withWriter(file) { writer =>
