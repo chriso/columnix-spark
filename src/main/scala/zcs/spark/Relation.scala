@@ -36,6 +36,8 @@ case class Relation(path: String)
 
   private[this] val fieldsByColumnIndex = schema.fields.toIndexedSeq
 
+  private[this] val dataTypes = schema.fields.map(_.dataType).toIndexedSeq
+
   val rowGroups: Array[Partition] = Array(RowGroup(0)) // FIXME
 
   private def fieldType(columnType: ColumnType.ColumnType) =
@@ -53,7 +55,7 @@ case class Relation(path: String)
     val fields = columns map fieldsByColumnIndex
     val schema = StructType(fields)
 
-    val translator = FilterTranslator(columnIndexByName, fields.map(_.dataType))
+    val translator = FilterTranslator(columnIndexByName, dataTypes)
     val filter = translator.translateFilters(pushedFilters: _*)
 
     val rdd = new ZCSRDD(sparkContext, path, columns, schema, filter, rowGroups)
