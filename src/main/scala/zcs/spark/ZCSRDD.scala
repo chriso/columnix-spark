@@ -18,6 +18,7 @@ class ZCSRDD(sc: SparkContext,
   def compute(split: Partition, context: TaskContext): Iterator[InternalRow] = {
 
     println("Columns:", columns.toSeq)
+    println("Schema:", schema)
     println("Filter:", filter)
 
     val reader = new Reader(path, filter)
@@ -26,6 +27,9 @@ class ZCSRDD(sc: SparkContext,
 
     context.addTaskCompletionListener(_ => close())
 
-    RowIterator(context, reader, columns, schema)
+    if (columns.isEmpty)
+      EmptySchemaIterator(context, reader)
+    else
+      RowIterator(context, reader, columns, schema)
   }
 }
