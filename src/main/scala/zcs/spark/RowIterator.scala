@@ -39,19 +39,19 @@ case class RowIterator(context: TaskContext,
   private def makeSetter(in: Int, out: Int) = {
     fieldTypes(out) match {
       case BooleanType =>
-        () => if (reader.isNull(in)) mutableRow.setNullAt(in)
+        () => if (reader.isNull(in)) mutableRow.setNullAt(out)
         else mutableRow.setBoolean(out, reader.getBoolean(in))
 
       case IntegerType =>
-        () => if (reader.isNull(in)) mutableRow.setNullAt(in)
+        () => if (reader.isNull(in)) mutableRow.setNullAt(out)
         else mutableRow.setInt(out, reader.getInt(in))
 
       case LongType =>
-        () => if (reader.isNull(in)) mutableRow.setNullAt(in)
+        () => if (reader.isNull(in)) mutableRow.setNullAt(out)
         else mutableRow.setLong(out, reader.getLong(in))
 
       case StringType =>
-        () => if (reader.isNull(in)) mutableRow.setNullAt(in)
+        () => if (reader.isNull(in)) mutableRow.setNullAt(out)
         else mutableRow.update(out, UTF8String.fromString(reader.getString(in)))
     }
   }

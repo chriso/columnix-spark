@@ -32,9 +32,9 @@ case class Relation(path: String)
     } finally reader.close()
   }
 
-  private[this] val columnByName = schema.fields.map(_.name).zipWithIndex.toMap
+  private[this] val columnIndexByName = schema.fields.map(_.name).zipWithIndex.toMap
 
-  private[this] val fieldsByIndex = schema.fields.toIndexedSeq
+  private[this] val fieldsByColumnIndex = schema.fields.toIndexedSeq
 
   val rowGroups: Array[Partition] = Array(RowGroup(0)) // FIXME
 
@@ -46,10 +46,15 @@ case class Relation(path: String)
       case ColumnType.String => StringType
     }
 
-  def buildScan(requiredColumns: Array[String], filters: Array[Filter]): RDD[Row] = {
-    val scanColumns = requiredColumns map columnByName
-    val scanSchema = StructType(scanColumns map fieldsByIndex)
-    val rdd = new ZCSRDD(sparkContext, path, scanColumns, scanSchema, filters, rowGroups)
+  def buildScan(requiredColumns: Array[String], pushedFilters: Array[Filter]): RDD[Row] = {
+    val columns = requiredColumns map columnIndexByName
+    val fields = columns map fieldsByColumnIndex
+    val schema = StructType(fields)
+
+    val translator = FilterTranslator(columnIndexByName, fields.map(_.dataType))
+    val filter = translator.translateFilters(pushedFilters)
+
+    val rdd = new ZCSRDD(sparkContext, path, columns, schema, filter, rowGroups)
     rdd.asInstanceOf[RDD[Row]]
   }
 }
