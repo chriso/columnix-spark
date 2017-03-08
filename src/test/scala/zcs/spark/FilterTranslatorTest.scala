@@ -26,6 +26,7 @@ class FilterTranslatorTest extends FlatSpec with Matchers {
   it should "translate long filters" in {
     translate(spark.EqualTo("long", 10)) shouldEqual LongEquals(2, 10L)
     translate(spark.EqualTo("long", 10L)) shouldEqual LongEquals(2, 10L)
+    translate(spark.EqualNullSafe("long", 10L)) shouldEqual And(IsNotNull(2), LongEquals(2, 10L))
     translate(spark.LessThan("long", 10)) shouldEqual LongLessThan(2, 10)
     translate(spark.LessThan("long", 10L)) shouldEqual LongLessThan(2, 10L)
     translate(spark.LessThanOrEqual("long", 10)) shouldEqual Not(LongGreaterThan(2, 10))
@@ -39,4 +40,23 @@ class FilterTranslatorTest extends FlatSpec with Matchers {
       LongEquals(2, 2L),
       LongEquals(2, 3L))
   }
+
+  it should "translate string filters" in {
+    translate(spark.EqualTo("str", "foo")) shouldEqual StringEquals(3, "foo")
+    translate(spark.EqualTo("str", 10)) shouldEqual StringEquals(3, "10")
+    translate(spark.LessThan("str", "foo")) shouldEqual StringLessThan(3, "foo")
+    translate(spark.LessThan("str", 10L)) shouldEqual StringLessThan(3, "10")
+    translate(spark.GreaterThan("str", "foo")) shouldEqual StringGreaterThan(3, "foo")
+    translate(spark.GreaterThan("str", 10)) shouldEqual StringGreaterThan(3, "10")
+    translate(spark.LessThanOrEqual("str", "foo")) shouldEqual Not(StringGreaterThan(3, "foo"))
+    translate(spark.GreaterThanOrEqual("str", "foo")) shouldEqual Not(StringLessThan(3, "foo"))
+    translate(spark.StringStartsWith("str", "foo")) shouldEqual StringContains(3, "foo", StringLocation.Start)
+    translate(spark.StringEndsWith("str", "foo")) shouldEqual StringContains(3, "foo", StringLocation.End)
+    translate(spark.StringContains("str", "foo")) shouldEqual StringContains(3, "foo", StringLocation.Any)
+    translate(spark.In("str", Array("foo", "bar", 10))) shouldEqual Or(
+      StringEquals(3, "foo"),
+      StringEquals(3, "bar"),
+      StringEquals(3, "10"))
+  }
+
 }

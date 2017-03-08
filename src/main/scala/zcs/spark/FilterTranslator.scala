@@ -31,26 +31,36 @@ case class FilterTranslator(columns: Map[String, Int], types: IndexedSeq[DataTyp
       val column = columns(name)
       val operands = values map (translateEquals(column, _))
       Or(operands.head, operands.tail: _*)
-
-    case spark.StringStartsWith(name, value) => ???
-    case spark.StringEndsWith(name, value) => ???
-    case spark.StringContains(name, value) => ???
+    case spark.StringStartsWith(name, value) =>
+      StringContains(columns(name), value, StringLocation.Start)
+    case spark.StringEndsWith(name, value) =>
+      StringContains(columns(name), value, StringLocation.End)
+    case spark.StringContains(name, value) =>
+      StringContains(columns(name), value, StringLocation.Any)
   }
 
-  private def translateEquals(column: Int, value: Any) = types(column) match {
-    case LongType => LongEquals(column, toLong(value))
-  }
+  private def translateEquals(column: Int, value: Any): Filter =
+    types(column) match {
+      case LongType => LongEquals(column, toLong(value))
+      case StringType => StringEquals(column, toString(value))
+    }
 
-  private def translateGreaterThan(column: Int, value: Any) = types(column) match {
-    case LongType => LongGreaterThan(column, toLong(value))
-  }
+  private def translateGreaterThan(column: Int, value: Any): Filter =
+    types(column) match {
+      case LongType => LongGreaterThan(column, toLong(value))
+      case StringType => StringGreaterThan(column, toString(value))
+    }
 
-  private def translateLessThan(column: Int, value: Any) = types(column) match {
-    case LongType => LongLessThan(column, toLong(value))
-  }
+  private def translateLessThan(column: Int, value: Any): Filter =
+    types(column) match {
+      case LongType => LongLessThan(column, toLong(value))
+      case StringType => StringLessThan(column, toString(value))
+    }
 
   private def toLong(value: Any): Long = value match {
     case long: Long => long
     case int: Int => int.toLong
   }
+
+  private def toString(value: Any): String = value.toString
 }

@@ -26,3 +26,16 @@ case class LongEquals(column: Int, value: Long) extends Filter
 case class LongGreaterThan(column: Int, value: Long) extends Filter
 
 case class LongLessThan(column: Int, value: Long) extends Filter
+
+case class StringEquals(column: Int, value: String,
+                        caseSensitive: Boolean = true) extends Filter
+
+case class StringGreaterThan(column: Int, value: String,
+                             caseSensitive: Boolean = true) extends Filter
+
+case class StringLessThan(column: Int, value: String,
+                          caseSensitive: Boolean = true) extends Filter
+
+case class StringContains(column: Int, value: String,
+                          location: StringLocation.StringLocation,
+                          caseSensitive: Boolean = true) extends Filter
