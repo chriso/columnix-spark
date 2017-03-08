@@ -4,6 +4,8 @@ class Reader(path: String, filter: Option[Filter] = None) {
 
   System.loadLibrary("zcs")
 
+  type Pointer = Long
+
   private[this] var ptr = filter match {
     case None => nativeNew(path)
     case Some(f) => nativeNewMatching(path, Predicate.fromFilter(f))
@@ -45,31 +47,31 @@ class Reader(path: String, filter: Option[Filter] = None) {
 
   @native private def nativeNew(path: String): Long = ???
 
-  @native private def nativeNewMatching(path: String, predicate: Long): Long = ???
+  @native private def nativeNewMatching(path: String, predicate: Predicate.Pointer): Pointer = ???
 
-  @native private def nativeFree(ptr: Long): Unit = ???
+  @native private def nativeFree(reader: Pointer): Unit = ???
 
-  @native private def nativeColumnCount(ptr: Long): Int = ???
+  @native private def nativeColumnCount(reader: Pointer): Int = ???
 
-  @native private def nativeRowCount(ptr: Long): Long = ???
+  @native private def nativeRowCount(reader: Pointer): Long = ???
 
-  @native private def nativeRewind(ptr: Long): Unit = ???
+  @native private def nativeRewind(reader: Pointer): Unit = ???
 
-  @native private def nativeNext(ptr: Long): Boolean = ???
+  @native private def nativeNext(reader: Pointer): Boolean = ???
 
-  @native private def nativeColumnType(ptr: Long, index: Int): Int = ???
+  @native private def nativeColumnType(reader: Pointer, index: Int): Int = ???
 
-  @native private def nativeColumnEncoding(ptr: Long, index: Int): Int = ???
+  @native private def nativeColumnEncoding(reader: Pointer, index: Int): Int = ???
 
-  @native private def nativeColumnCompression(ptr: Long, index: Int): Int = ???
+  @native private def nativeColumnCompression(reader: Pointer, index: Int): Int = ???
 
-  @native private def nativeIsNull(ptr: Long, index: Int): Boolean = ???
+  @native private def nativeIsNull(reader: Pointer, index: Int): Boolean = ???
 
-  @native private def nativeGetBoolean(ptr: Long, index: Int): Boolean = ???
+  @native private def nativeGetBoolean(reader: Pointer, index: Int): Boolean = ???
 
-  @native private def nativeGetInt(ptr: Long, index: Int): Int = ???
+  @native private def nativeGetInt(reader: Pointer, index: Int): Int = ???
 
-  @native private def nativeGetLong(ptr: Long, index: Int): Long = ???
+  @native private def nativeGetLong(reader: Pointer, index: Int): Long = ???
 
-  @native private def nativeGetString(ptr: Long, index: Int): String = ???
+  @native private def nativeGetString(reader: Pointer, index: Int): String = ???
 }

@@ -4,6 +4,8 @@ class Writer(path: String, rowGroupSize: Long = 1000000L) {
 
   System.loadLibrary("zcs")
 
+  type Pointer = Long
+
   private[this] var ptr = nativeNew(path, rowGroupSize)
 
   def finish(sync: Boolean = false): Unit = nativeFinish(ptr, sync)
@@ -31,22 +33,22 @@ class Writer(path: String, rowGroupSize: Long = 1000000L) {
 
   def putString(index: Int, value: String): Unit = nativePutString(ptr, index, value)
 
-  @native private def nativeNew(path: String, rowGroupSize: Long): Long = ???
+  @native private def nativeNew(path: String, rowGroupSize: Long): Pointer = ???
 
-  @native private def nativeFree(ptr: Long): Unit = ???
+  @native private def nativeFree(writer: Pointer): Unit = ???
 
-  @native private def nativeFinish(ptr: Long, sync: Boolean): Unit = ???
+  @native private def nativeFinish(writer: Pointer, sync: Boolean): Unit = ???
 
-  @native private def nativeAddColumn(ptr: Long, `type`: Int, encoding: Int, compression: Int,
+  @native private def nativeAddColumn(writer: Pointer, `type`: Int, encoding: Int, compression: Int,
                                       compressionLevel: Int): Unit = ???
 
-  @native private def nativePutNull(ptr: Long, index: Int): Unit = ???
+  @native private def nativePutNull(writer: Pointer, index: Int): Unit = ???
 
-  @native private def nativePutBoolean(ptr: Long, index: Int, value: Boolean): Unit = ???
+  @native private def nativePutBoolean(writer: Pointer, index: Int, value: Boolean): Unit = ???
 
-  @native private def nativePutInt(ptr: Long, index: Int, value: Int): Unit = ???
+  @native private def nativePutInt(writer: Pointer, index: Int, value: Int): Unit = ???
 
-  @native private def nativePutLong(ptr: Long, index: Int, value: Long): Unit = ???
+  @native private def nativePutLong(writer: Pointer, index: Int, value: Long): Unit = ???
 
-  @native private def nativePutString(ptr: Long, index: Int, value: String): Unit = ???
+  @native private def nativePutString(writer: Pointer, index: Int, value: String): Unit = ???
 }
