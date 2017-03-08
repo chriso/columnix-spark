@@ -10,7 +10,7 @@ class FilterTranslatorTest extends FlatSpec with Matchers {
   behavior of "FilterTranslator"
 
   private val translator = FilterTranslator(
-    Map("bit" -> 0, "int" -> 1, "long" -> 2, "str" -> 3),
+    Map("bool" -> 0, "int" -> 1, "long" -> 2, "str" -> 3),
     IndexedSeq(BooleanType, IntegerType, LongType, StringType))
 
   it should "translate an array of spark filters" in {
@@ -22,6 +22,12 @@ class FilterTranslatorTest extends FlatSpec with Matchers {
 
   private def translate(filter: spark.Filter) =
     translator.translateFilters(filter).get
+
+  it should "translate boolean filters" in {
+    translate(spark.EqualTo("bool", false)) shouldEqual BooleanEquals(0, false)
+    translate(spark.EqualTo("bool", true)) shouldEqual BooleanEquals(0, true)
+    translate(spark.EqualNullSafe("bool", false)) shouldEqual And(IsNotNull(0), BooleanEquals(0, false))
+  }
 
   it should "translate long filters" in {
     translate(spark.EqualTo("long", 10)) shouldEqual LongEquals(2, 10L)

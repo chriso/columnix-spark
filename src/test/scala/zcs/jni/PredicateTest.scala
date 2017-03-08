@@ -4,6 +4,28 @@ class PredicateTest extends Test {
 
   behavior of "Predicate"
 
+  it should "filter by boolean" in test { file =>
+    withWriter(file) { writer =>
+      writer.addColumn(ColumnType.Boolean)
+      writer.putBoolean(0, true)
+      writer.putBoolean(0, false)
+      writer.finish()
+    }
+
+    val expected = Seq(
+      BooleanEquals(0, true) -> Seq(true),
+      BooleanEquals(0, false) -> Seq(false),
+      Or(BooleanEquals(0, false), BooleanEquals(0, true)) -> Seq(true, false),
+      And(BooleanEquals(0, false), BooleanEquals(0, true)) -> Nil
+    )
+
+    for ((filter, result) <- expected) {
+      withReader(file, Some(filter)) { reader =>
+        reader.collect[Boolean](0).flatten shouldEqual result
+      }
+    }
+  }
+
   it should "filter by long" in test { file =>
     withWriter(file) { writer =>
       writer.addColumn(ColumnType.Long)
@@ -63,7 +85,6 @@ class PredicateTest extends Test {
     )
 
     for ((filter, result) <- expected) {
-      println(filter, result)
       withReader(file, Some(filter)) { reader =>
         reader.collect[String](0).flatten shouldEqual result
       }

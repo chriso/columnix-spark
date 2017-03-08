@@ -21,6 +21,8 @@ case class And(head: Filter, tail: Filter*) extends Operator
 
 case class Or(head: Filter, tail: Filter*) extends Operator
 
+case class BooleanEquals(column: Int, value: Boolean) extends Filter
+
 case class LongEquals(column: Int, value: Long) extends Filter
 
 case class LongGreaterThan(column: Int, value: Long) extends Filter

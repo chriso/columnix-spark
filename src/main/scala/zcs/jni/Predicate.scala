@@ -13,6 +13,8 @@ object Predicate {
     case Not(operand) => nativeNegate(fromFilter(operand))
     case and: And => nativeAnd(and.operands map fromFilter)
     case or: Or => nativeOr(or.operands map fromFilter)
+    // boolean
+    case BooleanEquals(column, value) => nativeBooleanEquals(column, value)
     // long
     case LongEquals(column, value) => nativeLongEquals(column, value)
     case LongGreaterThan(column, value) => nativeLongGreaterThan(column, value)
@@ -27,6 +29,8 @@ object Predicate {
     case StringContains(column, value, location, caseSensitive) =>
       nativeStringContains(column, value, location.id, caseSensitive)
   }
+
+  @native private def nativeBooleanEquals(column: Int, value: Boolean): Pointer = ???
 
   @native private def nativeLongEquals(column: Int, value: Long): Pointer = ???
 
