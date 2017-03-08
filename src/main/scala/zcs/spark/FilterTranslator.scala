@@ -41,25 +41,32 @@ case class FilterTranslator(columns: Map[String, Int], types: IndexedSeq[DataTyp
 
   private def translateEquals(column: Int, value: Any): Filter =
     types(column) match {
+      case BooleanType => BooleanEquals(column, toBoolean(value))
+      case IntegerType => IntEquals(column, toInt(value))
       case LongType => LongEquals(column, toLong(value))
       case StringType => StringEquals(column, toString(value))
-      case BooleanType => BooleanEquals(column, toBoolean(value))
     }
 
   private def translateGreaterThan(column: Int, value: Any): Filter =
     types(column) match {
+      case IntegerType => IntGreaterThan(column, toInt(value))
       case LongType => LongGreaterThan(column, toLong(value))
       case StringType => StringGreaterThan(column, toString(value))
     }
 
   private def translateLessThan(column: Int, value: Any): Filter =
     types(column) match {
+      case IntegerType => IntLessThan(column, toInt(value))
       case LongType => LongLessThan(column, toLong(value))
       case StringType => StringLessThan(column, toString(value))
     }
 
   private def toBoolean(value: Any): Boolean = value match {
     case bool: Boolean => bool
+  }
+
+  private def toInt(value: Any): Int = value match {
+    case int: Int => int
   }
 
   private def toLong(value: Any): Long = value match {

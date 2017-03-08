@@ -26,6 +26,31 @@ class PredicateTest extends Test {
     }
   }
 
+  it should "filter by int" in test { file =>
+    withWriter(file) { writer =>
+      writer.addColumn(ColumnType.Int)
+      for (i <- 1 to 10)
+        writer.putInt(0, i)
+      writer.finish()
+    }
+
+    val expected = Seq(
+      IntEquals(0, 3) -> Seq(3),
+      IntEquals(0, 999) -> Nil,
+      Not(IntEquals(0, 3)) -> Seq(1, 2, 4, 5, 6, 7, 8, 9, 10),
+      IntGreaterThan(0, 7) -> Seq(8, 9, 10),
+      IntLessThan(0, 3) -> Seq(1, 2),
+      Or(IntEquals(0, 3), IntEquals(0, 7), IntEquals(0, 9)) -> Seq(3, 7, 9),
+      And(IntGreaterThan(0, 3), IntLessThan(0, 7)) -> Seq(4, 5, 6)
+    )
+
+    for ((filter, result) <- expected) {
+      withReader(file, Some(filter)) { reader =>
+        reader.collect[Int](0).flatten shouldEqual result
+      }
+    }
+  }
+
   it should "filter by long" in test { file =>
     withWriter(file) { writer =>
       writer.addColumn(ColumnType.Long)

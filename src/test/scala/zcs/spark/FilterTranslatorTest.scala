@@ -29,6 +29,19 @@ class FilterTranslatorTest extends FlatSpec with Matchers {
     translate(spark.EqualNullSafe("bool", false)) shouldEqual And(IsNotNull(0), BooleanEquals(0, false))
   }
 
+  it should "translate int filters" in {
+    translate(spark.EqualTo("int", 10)) shouldEqual IntEquals(1, 10)
+    translate(spark.EqualNullSafe("int", 10)) shouldEqual And(IsNotNull(1), IntEquals(1, 10))
+    translate(spark.LessThan("int", 10)) shouldEqual IntLessThan(1, 10)
+    translate(spark.LessThanOrEqual("int", 10)) shouldEqual Not(IntGreaterThan(1, 10))
+    translate(spark.GreaterThan("int", 10)) shouldEqual IntGreaterThan(1, 10)
+    translate(spark.GreaterThanOrEqual("int", 10)) shouldEqual Not(IntLessThan(1, 10))
+    translate(spark.In("int", Array(1, 2, 3))) shouldEqual Or(
+      IntEquals(1, 1),
+      IntEquals(1, 2),
+      IntEquals(1, 3))
+  }
+
   it should "translate long filters" in {
     translate(spark.EqualTo("long", 10)) shouldEqual LongEquals(2, 10L)
     translate(spark.EqualTo("long", 10L)) shouldEqual LongEquals(2, 10L)

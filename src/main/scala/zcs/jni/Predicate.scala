@@ -15,6 +15,10 @@ object Predicate {
     case or: Or => nativeOr(or.operands map fromFilter)
     // boolean
     case BooleanEquals(column, value) => nativeBooleanEquals(column, value)
+    // int
+    case IntEquals(column, value) => nativeIntEquals(column, value)
+    case IntGreaterThan(column, value) => nativeIntGreaterThan(column, value)
+    case IntLessThan(column, value) => nativeIntLessThan(column, value)
     // long
     case LongEquals(column, value) => nativeLongEquals(column, value)
     case LongGreaterThan(column, value) => nativeLongGreaterThan(column, value)
@@ -31,6 +35,12 @@ object Predicate {
   }
 
   @native private def nativeBooleanEquals(column: Int, value: Boolean): Pointer = ???
+
+  @native private def nativeIntEquals(column: Int, value: Int): Pointer = ???
+
+  @native private def nativeIntGreaterThan(column: Int, value: Int): Pointer = ???
+
+  @native private def nativeIntLessThan(column: Int, value: Int): Pointer = ???
 
   @native private def nativeLongEquals(column: Int, value: Long): Pointer = ???
 
