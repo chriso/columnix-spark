@@ -2,4 +2,4 @@ package zcs.jni
 
 sealed trait Filter
 
-case class Equals(column: Int, value: Long) extends Filter
+case class LongEquals(column: Int, value: Long) extends Filter

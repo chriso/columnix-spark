@@ -5,7 +5,7 @@ object Predicate {
   System.loadLibrary("zcs")
 
   private[zcs] def fromFilter(filter: Filter): Long = filter match {
-    case Equals(column, value) => nativeLongEquals(column, value)
+    case LongEquals(column, value) => nativeLongEquals(column, value)
   }
 
   @native private def nativeLongEquals(column: Int, value: Long): Long = ???
