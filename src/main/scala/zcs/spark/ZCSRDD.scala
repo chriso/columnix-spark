@@ -5,7 +5,7 @@ import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.sources.Filter
 import org.apache.spark.sql.types._
 import org.apache.spark.{Partition, SparkContext, TaskContext}
-import zcs.jni.{LongEquals, Reader}
+import zcs.jni.{And, LongEquals, Or, Reader}
 
 class ZCSRDD(sc: SparkContext,
              path: String,
@@ -19,7 +19,10 @@ class ZCSRDD(sc: SparkContext,
   def compute(split: Partition, context: TaskContext): Iterator[InternalRow] = {
 
     // FIXME: get this dynamically
-    val predicate = Some(LongEquals(0, 1384203753000L))
+    val predicate = Some(Or(
+      LongEquals(0, 1384203753000L),
+      LongEquals(0, 1384699635000L)
+    ))
 
     val reader = new Reader(path, predicate)
 
