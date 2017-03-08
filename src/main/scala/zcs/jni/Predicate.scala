@@ -10,6 +10,7 @@ object Predicate {
     case LongEquals(column, value) => nativeLongEquals(column, value)
     case and: And => nativeAnd(and.operands map fromFilter)
     case or: Or => nativeOr(or.operands map fromFilter)
+    case Not(operand) => nativeNegate(fromFilter(operand))
   }
 
   @native private def nativeLongEquals(column: Int, value: Long): Pointer = ???

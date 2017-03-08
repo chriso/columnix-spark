@@ -14,3 +14,5 @@ sealed trait Operator extends Filter {
 case class And(head: Filter, tail: Filter*) extends Operator
 
 case class Or(head: Filter, tail: Filter*) extends Operator
+
+case class Not(filter: Filter) extends Filter

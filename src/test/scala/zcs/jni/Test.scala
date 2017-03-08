@@ -18,8 +18,9 @@ trait Test extends FlatSpec with Matchers {
     finally writer.close()
   }
 
-  def withReader[R](path: Path)(block: Reader => R): R = {
-    val reader = new Reader(path.toString)
+  def withReader[R](path: Path, filter: Option[Filter] = None)
+                   (block: Reader => R): R = {
+    val reader = new Reader(path.toString, filter)
     try block(reader)
     finally reader.close()
   }
