@@ -46,6 +46,8 @@ case class Relation(path: String)
       case ColumnType.String => StringType
     }
 
+  override def unhandledFilters(filters: Array[Filter]): Array[Filter] = Array.empty
+
   def buildScan(requiredColumns: Array[String], pushedFilters: Array[Filter]): RDD[Row] = {
     val columns = requiredColumns map columnIndexByName
     val fields = columns map fieldsByColumnIndex
