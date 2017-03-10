@@ -17,15 +17,10 @@ class ZCSRDD(sc: SparkContext,
 
   def compute(split: Partition, context: TaskContext): Iterator[InternalRow] = {
 
-    println("Columns:", columns.toSeq)
-    println("Schema:", schema)
-    println("Filter:", filter)
-
     val reader = new Reader(path, filter)
 
-    def close(): Unit = logInfo("Closing reader, probably!")
-
-    context.addTaskCompletionListener(_ => close())
+    context.addTaskCompletionListener(_ => reader.close())
+    context.addTaskFailureListener((_, _) => reader.close())
 
     if (columns.isEmpty)
       EmptySchemaIterator(context, reader)

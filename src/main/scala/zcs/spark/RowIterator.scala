@@ -33,7 +33,11 @@ case class RowIterator(context: TaskContext,
     if (context.isInterrupted)
       throw new TaskKilledException
 
-    reader.next
+    if (reader.next) true
+    else {
+      reader.close()
+      false
+    }
   }
 
   private def makeSetter(in: Int, out: Int) = {

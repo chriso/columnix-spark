@@ -7,8 +7,7 @@ import org.apache.spark.sql.{Row, SQLContext, SparkSession}
 import org.apache.spark.{Partition, SparkContext}
 import zcs.jni.{ColumnType, Reader}
 
-case class Relation(path: String)
-                   (@transient val sparkSession: SparkSession)
+case class Relation(path: String)(@transient val sparkSession: SparkSession)
   extends BaseRelation with PrunedFilteredScan {
 
   def sqlContext: SQLContext = sparkSession.sqlContext
@@ -48,6 +47,7 @@ case class Relation(path: String)
   override def unhandledFilters(filters: Array[Filter]): Array[Filter] = Array.empty
 
   def buildScan(requiredColumns: Array[String], pushedFilters: Array[Filter]): RDD[Row] = {
+
     val columns = requiredColumns map columnIndexByName
     val fields = columns map fieldsByColumnIndex
     val schema = StructType(fields)
