@@ -1,6 +1,7 @@
 package zcs.jni
 
-class Writer(path: String, rowGroupSize: Long = 1000000L) {
+class Writer(path: String, rowGroupSize: Long = 1000000L)
+  extends Serializable {
 
   System.loadLibrary("zcs")
 

@@ -59,3 +59,9 @@ case class Relation(path: String)(@transient val sparkSession: SparkSession)
     rdd.asInstanceOf[RDD[Row]]
   }
 }
+
+object Relation {
+
+  def apply(path: String, sqlContext: SQLContext): Relation =
+    Relation(path)(sqlContext.sparkSession)
+}
