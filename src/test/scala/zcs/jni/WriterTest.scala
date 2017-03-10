@@ -28,8 +28,8 @@ class WriterTest extends Test {
 
   it should "write files with no rows" in test { file =>
     withWriter(file) { writer =>
-      writer.addColumn(ColumnType.Int)
-      writer.addColumn(ColumnType.Long)
+      writer.addColumn(ColumnType.Int, "foo")
+      writer.addColumn(ColumnType.Long, "bar")
       writer.finish()
     }
     withReader(file) { reader =>
@@ -42,10 +42,10 @@ class WriterTest extends Test {
 
   it should "write column values to a file" in test { file =>
     withWriter(file) { writer =>
-      writer.addColumn(ColumnType.Boolean)
-      writer.addColumn(ColumnType.Int)
-      writer.addColumn(ColumnType.Long)
-      writer.addColumn(ColumnType.String)
+      writer.addColumn(ColumnType.Boolean, "bool")
+      writer.addColumn(ColumnType.Int, "int")
+      writer.addColumn(ColumnType.Long, "long")
+      writer.addColumn(ColumnType.String, "string")
       writer.put(0, Seq(Some(true), None, Some(false), None, None))
       writer.put(1, Seq(Some(Int.MinValue), Some(Int.MaxValue), None, Some(-1), Some(11)))
       writer.put(2, Seq(Some(Long.MinValue), Some(Long.MaxValue), None, Some(-1L), Some(22L)))
@@ -59,6 +59,10 @@ class WriterTest extends Test {
       reader.columnType(1) shouldEqual ColumnType.Int
       reader.columnType(2) shouldEqual ColumnType.Long
       reader.columnType(3) shouldEqual ColumnType.String
+      reader.columnName(0) shouldEqual "bool"
+      reader.columnName(1) shouldEqual "int"
+      reader.columnName(2) shouldEqual "long"
+      reader.columnName(3) shouldEqual "string"
       reader.collect[Boolean](0) shouldEqual Seq(Some(true), None, Some(false), None, None)
       reader.collect[Int](1) shouldEqual Seq(Some(Int.MinValue), Some(Int.MaxValue), None, Some(-1), Some(11))
       reader.collect[Long](2) shouldEqual Seq(Some(Long.MinValue), Some(Long.MaxValue), None, Some(-1L), Some(22L))

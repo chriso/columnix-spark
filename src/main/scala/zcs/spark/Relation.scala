@@ -22,11 +22,8 @@ case class Relation(path: String)
   private def inferSchema: StructType = {
     val reader = new Reader(path)
     try {
-      val fields = for {
-        i <- 0 until reader.columnCount
-        name = s"_$i"
-        field = fieldType(reader.columnType(i))
-      } yield StructField(name, field, nullable = true)
+      val fields = for (i <- 0 until reader.columnCount)
+        yield StructField(reader.columnName(i), dataType(reader.columnType(i)), nullable = true)
 
       StructType(fields)
     } finally reader.close()
@@ -40,7 +37,7 @@ case class Relation(path: String)
 
   val rowGroups: Array[Partition] = Array(RowGroup(0)) // FIXME
 
-  private def fieldType(columnType: ColumnType.ColumnType) =
+  private def dataType(columnType: ColumnType.ColumnType) =
     columnType match {
       case ColumnType.Boolean => BooleanType
       case ColumnType.Int => IntegerType

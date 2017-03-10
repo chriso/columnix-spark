@@ -6,7 +6,7 @@ class Predicate$Test extends Test {
 
   it should "filter by boolean" in test { file =>
     withWriter(file) { writer =>
-      writer.addColumn(ColumnType.Boolean)
+      writer.addColumn(ColumnType.Boolean, "foo")
       writer.putBoolean(0, true)
       writer.putBoolean(0, false)
       writer.finish()
@@ -28,7 +28,7 @@ class Predicate$Test extends Test {
 
   it should "filter by int" in test { file =>
     withWriter(file) { writer =>
-      writer.addColumn(ColumnType.Int)
+      writer.addColumn(ColumnType.Int, "foo")
       for (i <- 1 to 10)
         writer.putInt(0, i)
       writer.finish()
@@ -53,7 +53,7 @@ class Predicate$Test extends Test {
 
   it should "filter by long" in test { file =>
     withWriter(file) { writer =>
-      writer.addColumn(ColumnType.Long)
+      writer.addColumn(ColumnType.Long, "foo")
       for (i <- 1L to 10L)
         writer.putLong(0, i)
       writer.finish()
@@ -78,7 +78,7 @@ class Predicate$Test extends Test {
 
   it should "filter by string" in test { file =>
     withWriter(file) { writer =>
-      writer.addColumn(ColumnType.String)
+      writer.addColumn(ColumnType.String, "foo")
       writer.putString(0, "a")
       writer.putString(0, "b")
       writer.putString(0, "c")
@@ -118,7 +118,7 @@ class Predicate$Test extends Test {
 
   it should "filter nulls" in test { file =>
     withWriter(file) { writer =>
-      writer.addColumn(ColumnType.Long)
+      writer.addColumn(ColumnType.Long, "foo")
       writer.putLong(0, 1L)
       writer.putNull(0)
       writer.putLong(0, 2L)

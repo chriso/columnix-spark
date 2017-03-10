@@ -14,7 +14,7 @@ class ReaderTest extends Test {
 
   it should "provide access to string bytes" in test { file =>
     withWriter(file) { writer =>
-      writer.addColumn(ColumnType.String)
+      writer.addColumn(ColumnType.String, "foo")
       writer.putString(0, "foo")
       writer.finish()
     }

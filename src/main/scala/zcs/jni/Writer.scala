@@ -18,10 +18,11 @@ class Writer(path: String, rowGroupSize: Long = 1000000L) {
   }
 
   def addColumn(`type`: ColumnType.ColumnType,
+                name: String,
                 encoding: ColumnEncoding.ColumnEncoding = ColumnEncoding.None,
                 compression: ColumnCompression.ColumnCompression = ColumnCompression.None,
                 compressionLevel: Int = 0): Unit =
-    nativeAddColumn(ptr, `type`.id, encoding.id, compression.id, compressionLevel)
+    nativeAddColumn(ptr, name, `type`.id, encoding.id, compression.id, compressionLevel)
 
   def putNull(index: Int): Unit = nativePutNull(ptr, index)
 
@@ -39,7 +40,8 @@ class Writer(path: String, rowGroupSize: Long = 1000000L) {
 
   @native private def nativeFinish(writer: Pointer, sync: Boolean): Unit = ???
 
-  @native private def nativeAddColumn(writer: Pointer, `type`: Int, encoding: Int, compression: Int,
+  @native private def nativeAddColumn(writer: Pointer, name: String,
+                                      `type`: Int, encoding: Int, compression: Int,
                                       compressionLevel: Int): Unit = ???
 
   @native private def nativePutNull(writer: Pointer, index: Int): Unit = ???

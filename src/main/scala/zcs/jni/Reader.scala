@@ -26,6 +26,8 @@ class Reader(path: String, filter: Option[Filter] = None) {
 
   def next: Boolean = nativeNext(ptr)
 
+  def columnName(column: Int): String = nativeColumnName(ptr, column)
+
   def columnType(column: Int): ColumnType.ColumnType =
     ColumnType(nativeColumnType(ptr, column))
 
@@ -60,6 +62,8 @@ class Reader(path: String, filter: Option[Filter] = None) {
   @native private def nativeRewind(reader: Pointer): Unit = ???
 
   @native private def nativeNext(reader: Pointer): Boolean = ???
+
+  @native private def nativeColumnName(reader: Pointer, index: Int): String = ???
 
   @native private def nativeColumnType(reader: Pointer, index: Int): Int = ???
 
