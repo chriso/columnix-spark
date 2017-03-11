@@ -1,4 +1,4 @@
-package zcs.jni
+package com.columnix.jni
 
 sealed trait Filter
 

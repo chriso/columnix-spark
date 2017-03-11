@@ -1,9 +1,9 @@
-package zcs.spark
+package com.columnix.spark
 
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.expressions.SpecificInternalRow
 import org.apache.spark.TaskContext
-import zcs.jni.Reader
+import com.columnix.jni.Reader
 
 case class EmptySchemaIterator(context: TaskContext,
                                reader: Reader) extends Iterator[InternalRow] {

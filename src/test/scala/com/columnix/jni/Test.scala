@@ -1,4 +1,4 @@
-package zcs.jni
+package com.columnix.jni
 
 import java.nio.file.{Files, Path}
 
@@ -7,7 +7,7 @@ import org.scalatest.{FlatSpec, Matchers}
 trait Test extends FlatSpec with Matchers {
 
   def test[R](block: Path => R): R = {
-    val file = Files.createTempFile("zcs", null)
+    val file = Files.createTempFile("columnix", null)
     try block(file)
     finally Files.delete(file)
   }

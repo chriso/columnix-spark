@@ -1,8 +1,8 @@
-package zcs.jni
+package com.columnix.jni
 
 class Reader(path: String, filter: Option[Filter] = None) {
 
-  System.loadLibrary("zcs")
+  System.loadLibrary("columnix")
 
   type Pointer = Long
 

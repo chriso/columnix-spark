@@ -1,4 +1,4 @@
-package zcs.spark
+package com.columnix.spark
 
 import org.apache.spark.Partition
 

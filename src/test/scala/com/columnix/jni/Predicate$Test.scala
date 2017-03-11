@@ -1,4 +1,4 @@
-package zcs.jni
+package com.columnix.jni
 
 class Predicate$Test extends Test {
 

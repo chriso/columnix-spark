@@ -1,17 +1,17 @@
-package zcs.spark
+package com.columnix.spark
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.types._
 import org.apache.spark.{Partition, SparkContext, TaskContext}
-import zcs.jni.{Reader, Filter}
+import com.columnix.jni.{Reader, Filter}
 
-class ZCSRDD(sc: SparkContext,
-             path: String,
-             columns: Array[Int],
-             schema: StructType,
-             filter: Option[Filter],
-             partitions: Array[Partition]) extends RDD[InternalRow](sc, Nil) {
+class ColumnixRDD(sc: SparkContext,
+                  path: String,
+                  columns: Array[Int],
+                  schema: StructType,
+                  filter: Option[Filter],
+                  partitions: Array[Partition]) extends RDD[InternalRow](sc, Nil) {
 
   def getPartitions: Array[Partition] = partitions
 

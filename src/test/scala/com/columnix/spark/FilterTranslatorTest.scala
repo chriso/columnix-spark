@@ -1,9 +1,9 @@
-package zcs.spark
+package com.columnix.spark
 
 import org.apache.spark.sql.types.{BooleanType, IntegerType, LongType, StringType}
 import org.apache.spark.sql.{sources => spark}
 import org.scalatest.{FlatSpec, Matchers}
-import zcs.jni._
+import com.columnix.jni._
 
 class FilterTranslatorTest extends FlatSpec with Matchers {
 

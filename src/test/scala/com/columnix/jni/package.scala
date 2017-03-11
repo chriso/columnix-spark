@@ -1,4 +1,4 @@
-package zcs
+package com.columnix
 
 package object jni {
 

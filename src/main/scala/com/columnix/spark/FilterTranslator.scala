@@ -1,8 +1,8 @@
-package zcs.spark
+package com.columnix.spark
 
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{sources => spark}
-import zcs.jni._
+import com.columnix.jni._
 
 case class FilterTranslator(columns: Map[String, Int], types: IndexedSeq[DataType]) {
 

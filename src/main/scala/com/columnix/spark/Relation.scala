@@ -1,11 +1,11 @@
-package zcs.spark
+package com.columnix.spark
 
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.sources.{BaseRelation, Filter, PrunedFilteredScan}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{Row, SQLContext, SparkSession}
 import org.apache.spark.{Partition, SparkContext}
-import zcs.jni.{ColumnType, Reader}
+import com.columnix.jni.{ColumnType, Reader}
 
 case class Relation(path: String)(@transient val sparkSession: SparkSession)
   extends BaseRelation with PrunedFilteredScan {
@@ -55,7 +55,7 @@ case class Relation(path: String)(@transient val sparkSession: SparkSession)
     val translator = FilterTranslator(columnIndexByName, dataTypes)
     val filter = translator.translateFilters(pushedFilters: _*)
 
-    val rdd = new ZCSRDD(sparkContext, path, columns, schema, filter, rowGroups)
+    val rdd = new ColumnixRDD(sparkContext, path, columns, schema, filter, rowGroups)
     rdd.asInstanceOf[RDD[Row]]
   }
 }

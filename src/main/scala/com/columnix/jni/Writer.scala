@@ -1,9 +1,9 @@
-package zcs.jni
+package com.columnix.jni
 
 class Writer(path: String, rowGroupSize: Long = 1000000L)
   extends Serializable {
 
-  System.loadLibrary("zcs")
+  System.loadLibrary("columnix")
 
   type Pointer = Long
 

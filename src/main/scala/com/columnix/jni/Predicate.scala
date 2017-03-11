@@ -1,12 +1,12 @@
-package zcs.jni
+package com.columnix.jni
 
-object Predicate {
+private[jni] object Predicate {
 
-  System.loadLibrary("zcs")
+  System.loadLibrary("columnix")
 
   type Pointer = Long
 
-  private[zcs] def fromFilter(filter: Filter): Pointer = filter match {
+  def fromFilter(filter: Filter): Pointer = filter match {
     case IsNull(column) => nativeNull(column)
     case IsNotNull(column) => nativeNegate(nativeNull(column))
     // operators

@@ -1,4 +1,4 @@
-package zcs.spark
+package com.columnix.spark
 
 import java.nio.file.{Paths, Files}
 
@@ -9,7 +9,7 @@ class DefaultSource extends RelationProvider
   with CreatableRelationProvider
   with DataSourceRegister {
 
-  def shortName: String = "zcs"
+  def shortName: String = "columnix"
 
   def createRelation(sqlContext: SQLContext,
                      parameters: Map[String, String]): BaseRelation = {

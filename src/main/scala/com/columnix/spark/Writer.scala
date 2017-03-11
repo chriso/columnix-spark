@@ -1,12 +1,12 @@
-package zcs.spark
+package com.columnix.spark
 
 import org.apache.spark.sql.{DataFrame, Row}
 import org.apache.spark.sql.types._
-import zcs.jni.{ColumnCompression, ColumnType}
+import com.columnix.jni.{ColumnCompression, ColumnType}
 
 case class Writer(path: String, data: DataFrame) {
 
-  private[this] val writer = new zcs.jni.Writer(path)
+  private[this] val writer = new com.columnix.jni.Writer(path)
 
   private[this] val fields = data.schema.fields
 
