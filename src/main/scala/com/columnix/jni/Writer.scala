@@ -18,6 +18,8 @@ class Writer(path: String, rowGroupSize: Long = 1000000L)
     ptr = 0
   }
 
+  def setMetadata(metadata: String): Unit = nativeMetadata(ptr, metadata)
+
   def addColumn(`type`: ColumnType.ColumnType,
                 name: String,
                 encoding: ColumnEncoding.ColumnEncoding = ColumnEncoding.None,
@@ -38,6 +40,8 @@ class Writer(path: String, rowGroupSize: Long = 1000000L)
   @native private def nativeNew(path: String, rowGroupSize: Long): Pointer = ???
 
   @native private def nativeFree(writer: Pointer): Unit = ???
+
+  @native private def nativeMetadata(writer: Pointer, metadata: String): Unit = ???
 
   @native private def nativeFinish(writer: Pointer, sync: Boolean): Unit = ???
 

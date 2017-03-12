@@ -26,6 +26,8 @@ class Reader(path: String, filter: Option[Filter] = None) {
 
   def next: Boolean = nativeNext(ptr)
 
+  def metadata: Option[String] = Option(nativeMetadata(ptr))
+
   def columnName(column: Int): String = nativeColumnName(ptr, column)
 
   def columnType(column: Int): ColumnType.ColumnType =
@@ -54,6 +56,8 @@ class Reader(path: String, filter: Option[Filter] = None) {
   @native private def nativeNewMatching(path: String, predicate: Predicate.Pointer): Pointer = ???
 
   @native private def nativeFree(reader: Pointer): Unit = ???
+
+  @native private def nativeMetadata(reader: Pointer): String = ???
 
   @native private def nativeColumnCount(reader: Pointer): Int = ???
 

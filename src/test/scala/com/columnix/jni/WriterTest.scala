@@ -11,6 +11,16 @@ class WriterTest extends Test {
     }
   }
 
+  it should "write metadata" in test { file =>
+    withWriter(file) { writer =>
+      writer.setMetadata("foo")
+      writer.finish()
+    }
+    withReader(file) { reader =>
+      reader.metadata shouldEqual Some("foo")
+    }
+  }
+
   it should "have idempotent close()" in test { file =>
     withWriter(file) { writer =>
       writer.close()

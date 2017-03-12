@@ -24,4 +24,11 @@ class ReaderTest extends Test {
       reader.getStringBytes(0) shouldEqual Array('f', 'o', 'o')
     }
   }
+
+  it should "return none if a file has no metadata" in test { file =>
+    withWriter(file)(_.finish())
+    withReader(file) { reader =>
+      reader.metadata shouldEqual None
+    }
+  }
 }
