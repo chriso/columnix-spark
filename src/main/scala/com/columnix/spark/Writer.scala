@@ -1,8 +1,8 @@
 package com.columnix.spark
 
-import org.apache.spark.sql.{DataFrame, Row}
-import org.apache.spark.sql.types._
 import com.columnix.jni.{ColumnCompression, ColumnType}
+import org.apache.spark.sql.types._
+import org.apache.spark.sql.{DataFrame, Row}
 
 case class Writer(path: String, data: DataFrame) {
 

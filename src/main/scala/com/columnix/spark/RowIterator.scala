@@ -1,20 +1,18 @@
 package com.columnix.spark
 
+import com.columnix.jni.Reader
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.expressions.SpecificInternalRow
 import org.apache.spark.sql.types._
 import org.apache.spark.unsafe.types.UTF8String
 import org.apache.spark.{TaskContext, TaskKilledException}
-import com.columnix.jni.Reader
 
 case class RowIterator(context: TaskContext,
                        reader: Reader,
                        columns: Array[Int],
-                       schema: StructType) extends Iterator[InternalRow] {
+                       dataTypes: Array[DataType]) extends Iterator[InternalRow] {
 
-  private[this] val fieldTypes = schema.fields.map(_.dataType)
-
-  private[this] val mutableRow = new SpecificInternalRow(fieldTypes)
+  private[this] val mutableRow = new SpecificInternalRow(dataTypes)
 
   private[this] val setters = columns.zipWithIndex.map { case (in, out) => makeSetter(in, out) }
 
@@ -43,7 +41,7 @@ case class RowIterator(context: TaskContext,
   }
 
   private def makeSetter(in: Int, out: Int) = {
-    fieldTypes(out) match {
+    dataTypes(out) match {
       case BooleanType =>
         () => if (reader.isNull(in)) mutableRow.setNullAt(out)
         else mutableRow.setBoolean(out, reader.getBoolean(in))

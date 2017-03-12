@@ -1,9 +1,9 @@
 package com.columnix.spark
 
-import java.nio.file.{Paths, Files}
+import java.nio.file.{Files, Paths}
 
-import org.apache.spark.sql.{DataFrame, SQLContext, SaveMode}
 import org.apache.spark.sql.sources._
+import org.apache.spark.sql.{DataFrame, SQLContext, SaveMode}
 
 class DefaultSource extends RelationProvider
   with CreatableRelationProvider
@@ -18,8 +18,10 @@ class DefaultSource extends RelationProvider
     Relation(path, sqlContext)
   }
 
-  def createRelation(sqlContext: SQLContext, mode: SaveMode,
-                     parameters: Map[String, String], data: DataFrame): BaseRelation = {
+  def createRelation(sqlContext: SQLContext,
+                     mode: SaveMode,
+                     parameters: Map[String, String],
+                     data: DataFrame): BaseRelation = {
 
     val path = parameters.getOrElse("path", sys.error("'path' must be specified"))
 
