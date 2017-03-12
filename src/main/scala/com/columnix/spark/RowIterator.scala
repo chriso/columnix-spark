@@ -30,8 +30,10 @@ case class RowIterator(context: TaskContext,
   }
 
   def hasNext: Boolean = {
-    if (context.isInterrupted)
+    if (context.isInterrupted) {
+      reader.close()
       throw new TaskKilledException
+    }
 
     if (reader.next) true
     else {

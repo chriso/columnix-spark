@@ -5,8 +5,7 @@ import org.apache.spark.sql.catalyst.expressions.SpecificInternalRow
 import org.apache.spark.TaskContext
 import com.columnix.jni.Reader
 
-case class EmptySchemaIterator(context: TaskContext,
-                               reader: Reader) extends Iterator[InternalRow] {
+case class EmptySchemaIterator(reader: Reader) extends Iterator[InternalRow] {
 
   private[this] var remaining = reader.rowCount
 

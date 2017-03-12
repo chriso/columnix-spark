@@ -23,7 +23,7 @@ class ColumnixRDD(sc: SparkContext,
     context.addTaskFailureListener((_, _) => reader.close())
 
     if (columns.isEmpty)
-      EmptySchemaIterator(context, reader)
+      EmptySchemaIterator(reader)
     else
       RowIterator(context, reader, columns, schema)
   }
