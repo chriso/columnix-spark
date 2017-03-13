@@ -3,42 +3,72 @@ package com.columnix.jni
 class Writer(path: String, rowGroupSize: Long = 1000000L)
   extends Serializable {
 
+  require(rowGroupSize > 0L, "invalid row group size")
+
   private[this] val native = new c.Writer
 
   private[this] var ptr = native.create(path, rowGroupSize)
 
-  def finish(sync: Boolean = false): Unit =
-    native.finish(ptr, sync)
+  private[this] var columnCount: Int = 0
+
+  private def checkPointer() =
+    if (ptr == 0L)
+      throw new NullPointerException
+
+  private def checkBounds(column: Int) = {
+    checkPointer()
+    if (column < 0 || column >= columnCount)
+      throw new IndexOutOfBoundsException
+  }
 
   def close(): Unit = {
-    if (ptr == 0L)
-      return
-    native.free(ptr)
+    if (ptr != 0L)
+      native.free(ptr)
     ptr = 0L
   }
 
-  def setMetadata(metadata: String): Unit =
+  def finish(sync: Boolean = false): Unit = {
+    checkPointer()
+    native.finish(ptr, sync)
+  }
+
+  def setMetadata(metadata: String): Unit = {
+    checkPointer()
     native.setMetadata(ptr, metadata)
+  }
 
   def addColumn(columnType: ColumnType.ColumnType,
                 name: String,
                 encoding: ColumnEncoding.ColumnEncoding = ColumnEncoding.None,
                 compression: ColumnCompression.ColumnCompression = ColumnCompression.None,
-                compressionLevel: Int = 0): Unit =
+                compressionLevel: Int = 0): Unit = {
+    checkPointer()
     native.addColumn(ptr, name, columnType.id, encoding.id, compression.id, compressionLevel)
+    columnCount += 1
+  }
 
-  def putNull(index: Int): Unit =
-    native.putNull(ptr, index)
+  def putNull(column: Int): Unit = {
+    checkBounds(column)
+    native.putNull(ptr, column)
+  }
 
-  def putBoolean(index: Int, value: Boolean): Unit =
-    native.putBoolean(ptr, index, value)
+  def putBoolean(column: Int, value: Boolean): Unit = {
+    checkBounds(column)
+    native.putBoolean(ptr, column, value)
+  }
 
-  def putInt(index: Int, value: Int): Unit =
-    native.putInt(ptr, index, value)
+  def putInt(column: Int, value: Int): Unit = {
+    checkBounds(column)
+    native.putInt(ptr, column, value)
+  }
 
-  def putLong(index: Int, value: Long): Unit =
-    native.putLong(ptr, index, value)
+  def putLong(column: Int, value: Long): Unit = {
+    checkBounds(column)
+    native.putLong(ptr, column, value)
+  }
 
-  def putString(index: Int, value: String): Unit =
-    native.putString(ptr, index, value)
+  def putString(column: Int, value: String): Unit = {
+    checkBounds(column)
+    native.putString(ptr, column, value)
+  }
 }
