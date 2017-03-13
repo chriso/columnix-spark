@@ -11,7 +11,7 @@ class FilterTranslatorTest extends FlatSpec with Matchers {
 
   private val translator = FilterTranslator(
     Map("bool" -> 0, "int" -> 1, "long" -> 2, "str" -> 3),
-    IndexedSeq(BooleanType, IntegerType, LongType, StringType))
+    Array(BooleanType, IntegerType, LongType, StringType))
 
   it should "translate an array of spark filters" in {
     translator.translateFilters() shouldEqual None
