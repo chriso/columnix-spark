@@ -3,6 +3,7 @@ package com.columnix.spark
 import com.columnix.jni.{Filter, Reader}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.catalyst.InternalRow
+import org.apache.spark.sql.catalyst.expressions.SpecificInternalRow
 import org.apache.spark.sql.types._
 import org.apache.spark.{Partition, SparkContext, TaskContext}
 
@@ -18,10 +19,16 @@ class ColumnixRDD(sc: SparkContext,
 
     val reader = new Reader(path, filter)
 
-    context.addTaskCompletionListener(_ => reader.close())
-    context.addTaskFailureListener((_, _) => reader.close())
+    if (columns.isEmpty) {
+      val rowCount = reader.rowCount
+      reader.close()
+      RepeatIterator(rowCount, new SpecificInternalRow)
 
-    if (columns.isEmpty) CountIterator(reader)
-    else RowIterator(context, reader, columns, dataTypes)
+    } else {
+      context.addTaskCompletionListener(_ => reader.close())
+      context.addTaskFailureListener((_, _) => reader.close())
+
+      RowIterator(context, reader, columns, dataTypes)
+    }
   }
 }
