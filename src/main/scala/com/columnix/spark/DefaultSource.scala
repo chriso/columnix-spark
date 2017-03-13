@@ -36,7 +36,7 @@ class DefaultSource extends RelationProvider
 
     // FIXME: configurable compression, encoding and row group size
 
-    val writer = Writer(path, data)
+    val writer = DataFrameWriter(path, data)
 
     try writer.write()
     finally writer.close()
