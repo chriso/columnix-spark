@@ -1,16 +1,16 @@
 package com.columnix.spark
 
-import com.columnix.jni.Reader
+import com.columnix.jni.NativeReader
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.expressions.SpecificInternalRow
 import org.apache.spark.sql.types._
 import org.apache.spark.unsafe.types.UTF8String
 import org.apache.spark.{TaskContext, TaskKilledException}
 
-case class RowIterator(context: TaskContext,
-                       reader: Reader,
-                       columns: Array[Int],
-                       dataTypes: Array[DataType]) extends Iterator[InternalRow] {
+private[spark] case class RowIterator(context: TaskContext,
+                                      reader: NativeReader,
+                                      columns: Array[Int],
+                                      dataTypes: Array[DataType]) extends Iterator[InternalRow] {
 
   private[this] val mutableRow = new SpecificInternalRow(dataTypes)
 
@@ -43,20 +43,24 @@ case class RowIterator(context: TaskContext,
   private def makeSetter(in: Int, out: Int) = {
     dataTypes(out) match {
       case BooleanType =>
-        () => if (reader.isNull(in)) mutableRow.setNullAt(out)
-        else mutableRow.setBoolean(out, reader.getBoolean(in))
+        () =>
+          if (reader.isNull(in)) mutableRow.setNullAt(out)
+          else mutableRow.setBoolean(out, reader.getBoolean(in))
 
       case IntegerType =>
-        () => if (reader.isNull(in)) mutableRow.setNullAt(out)
-        else mutableRow.setInt(out, reader.getInt(in))
+        () =>
+          if (reader.isNull(in)) mutableRow.setNullAt(out)
+          else mutableRow.setInt(out, reader.getInt(in))
 
       case LongType =>
-        () => if (reader.isNull(in)) mutableRow.setNullAt(out)
-        else mutableRow.setLong(out, reader.getLong(in))
+        () =>
+          if (reader.isNull(in)) mutableRow.setNullAt(out)
+          else mutableRow.setLong(out, reader.getLong(in))
 
       case StringType =>
-        () => if (reader.isNull(in)) mutableRow.setNullAt(out)
-        else mutableRow.update(out, UTF8String.fromBytes(reader.getStringBytes(in)))
+        () =>
+          if (reader.isNull(in)) mutableRow.setNullAt(out)
+          else mutableRow.update(out, UTF8String.fromBytes(reader.getStringBytes(in)))
     }
   }
 }

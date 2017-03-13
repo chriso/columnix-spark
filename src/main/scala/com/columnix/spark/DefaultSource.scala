@@ -5,8 +5,7 @@ import java.nio.file.{Files, Paths}
 import org.apache.spark.sql.sources._
 import org.apache.spark.sql.{DataFrame, SQLContext, SaveMode}
 
-class DefaultSource extends RelationProvider
-  with CreatableRelationProvider
+class DefaultSource extends RelationProvider with CreatableRelationProvider
   with DataSourceRegister {
 
   def shortName: String = "columnix"
@@ -15,7 +14,7 @@ class DefaultSource extends RelationProvider
                      parameters: Map[String, String]): BaseRelation = {
 
     val path = parameters.getOrElse("path", sys.error("'path' must be specified"))
-    Relation(path, sqlContext)
+    ColumnixRelation(path, sqlContext)
   }
 
   def createRelation(sqlContext: SQLContext,
@@ -31,16 +30,16 @@ class DefaultSource extends RelationProvider
       else if (mode == SaveMode.ErrorIfExists)
         throw new RuntimeException("file exists")
       else if (mode == SaveMode.Ignore)
-        return Relation(path, sqlContext)
+        return ColumnixRelation(path, sqlContext)
     }
 
     // FIXME: configurable compression, encoding and row group size
 
-    val writer = DataFrameWriter(path, data)
+    val writer = ColumnixWriter(path, data)
 
     try writer.write()
     finally writer.close()
 
-    Relation(path, sqlContext)
+    ColumnixRelation(path, sqlContext)
   }
 }

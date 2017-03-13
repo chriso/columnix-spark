@@ -1,6 +1,6 @@
 package com.columnix.spark
 
-import com.columnix.jni.{Filter, Reader}
+import com.columnix.jni.{Filter, NativeReader}
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.expressions.SpecificInternalRow
@@ -17,7 +17,7 @@ class ColumnixRDD(sc: SparkContext,
 
   def compute(partition: Partition, context: TaskContext): Iterator[InternalRow] = {
 
-    val reader = new Reader(path, filter)
+    val reader = new NativeReader(path, filter)
 
     if (columns.isEmpty) {
       val rowCount = reader.rowCount

@@ -1,6 +1,6 @@
 package com.columnix.jni
 
-class Writer(path: String, rowGroupSize: Long = 1000000L)
+class NativeWriter(path: String, rowGroupSize: Long = 1000000L)
   extends Serializable {
 
   require(rowGroupSize > 0L, "invalid row group size")

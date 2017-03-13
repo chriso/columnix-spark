@@ -1,8 +1,8 @@
 package com.columnix.jni
 
-class ReaderTest extends Test {
+class NativeReaderTest extends Test {
 
-  behavior of "Reader"
+  behavior of "NativeReader"
 
   it should "have idempotent close()" in test { file =>
     withWriter(file)(_.finish())

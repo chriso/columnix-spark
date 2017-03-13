@@ -12,15 +12,15 @@ trait Test extends FlatSpec with Matchers {
     finally Files.delete(file)
   }
 
-  def withWriter[R](path: Path)(block: Writer => R): R = {
-    val writer = new Writer(path.toString)
+  def withWriter[R](path: Path)(block: NativeWriter => R): R = {
+    val writer = new NativeWriter(path.toString)
     try block(writer)
     finally writer.close()
   }
 
   def withReader[R](path: Path, filter: Option[Filter] = None)
-                   (block: Reader => R): R = {
-    val reader = new Reader(path.toString, filter)
+                   (block: NativeReader => R): R = {
+    val reader = new NativeReader(path.toString, filter)
     try block(reader)
     finally reader.close()
   }

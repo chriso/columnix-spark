@@ -1,13 +1,13 @@
 package com.columnix.spark
 
-import com.columnix.jni.{ColumnType, Reader}
+import com.columnix.jni.{ColumnType, NativeReader}
 import org.apache.spark.SparkContext
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.sources.{BaseRelation, Filter, PrunedFilteredScan}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{Row, SQLContext, SparkSession}
 
-case class Relation(path: String)(@transient val sparkSession: SparkSession)
+case class ColumnixRelation(path: String)(@transient val sparkSession: SparkSession)
   extends BaseRelation with PrunedFilteredScan {
 
   val schema: StructType = inferSchema
@@ -19,7 +19,7 @@ case class Relation(path: String)(@transient val sparkSession: SparkSession)
   private[this] val filterTranslator = FilterTranslator(columnIndexByName, dataTypes)
 
   private def inferSchema: StructType = {
-    val reader = new Reader(path)
+    val reader = new NativeReader(path)
     try {
       val fields = for {
         i <- 0 until reader.columnCount
@@ -57,8 +57,8 @@ case class Relation(path: String)(@transient val sparkSession: SparkSession)
   def sparkContext: SparkContext = sparkSession.sparkContext
 }
 
-object Relation {
+object ColumnixRelation {
 
-  def apply(path: String, sqlContext: SQLContext): Relation =
-    Relation(path)(sqlContext.sparkSession)
+  def apply(path: String, sqlContext: SQLContext): ColumnixRelation =
+    ColumnixRelation(path)(sqlContext.sparkSession)
 }

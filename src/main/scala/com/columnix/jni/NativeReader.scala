@@ -1,6 +1,6 @@
 package com.columnix.jni
 
-class Reader(path: String, filter: Option[Filter] = None) {
+class NativeReader(path: String, filter: Option[Filter] = None) {
 
   private[this] val native = new c.Reader
 

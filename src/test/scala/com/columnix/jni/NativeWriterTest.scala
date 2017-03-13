@@ -1,8 +1,8 @@
 package com.columnix.jni
 
-class WriterTest extends Test {
+class NativeWriterTest extends Test {
 
-  behavior of "Writer"
+  behavior of "NativeWriter"
 
   it should "have idempotent finish()" in test { file =>
     withWriter(file) { writer =>

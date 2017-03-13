@@ -1,12 +1,12 @@
 package com.columnix.spark
 
-import com.columnix.jni.{ColumnCompression, ColumnType, Writer}
+import com.columnix.jni.{ColumnCompression, ColumnType, NativeWriter}
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{DataFrame, Row}
 
-case class DataFrameWriter(path: String, data: DataFrame) {
+case class ColumnixWriter(path: String, data: DataFrame) {
 
-  private[this] val writer = new Writer(path)
+  private[this] val writer = new NativeWriter(path)
 
   private[this] val fields = data.schema.fields
 

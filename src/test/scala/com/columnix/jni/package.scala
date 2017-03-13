@@ -3,54 +3,54 @@ package com.columnix
 package object jni {
 
   sealed trait Getter[T] {
-    def get(reader: Reader, index: Int): T
+    def get(reader: NativeReader, index: Int): T
   }
 
   sealed trait Putter[T] {
-    def put(writer: Writer, index: Int, value: T): Unit
+    def put(writer: NativeWriter, index: Int, value: T): Unit
   }
 
   implicit val booleanGetter = new Getter[Boolean] {
-    def get(reader: Reader, index: Int): Boolean =
+    def get(reader: NativeReader, index: Int): Boolean =
       reader.getBoolean(index)
   }
 
   implicit val booleanPutter = new Putter[Boolean] {
-    def put(writer: Writer, index: Int, value: Boolean): Unit =
+    def put(writer: NativeWriter, index: Int, value: Boolean): Unit =
       writer.putBoolean(index, value)
   }
 
   implicit val intGetter = new Getter[Int] {
-    def get(reader: Reader, index: Int): Int =
+    def get(reader: NativeReader, index: Int): Int =
       reader.getInt(index)
   }
 
   implicit val intPutter = new Putter[Int] {
-    def put(writer: Writer, index: Int, value: Int): Unit =
+    def put(writer: NativeWriter, index: Int, value: Int): Unit =
       writer.putInt(index, value)
   }
 
   implicit val longGetter = new Getter[Long] {
-    def get(reader: Reader, index: Int): Long =
+    def get(reader: NativeReader, index: Int): Long =
       reader.getLong(index)
   }
 
   implicit val longPutter = new Putter[Long] {
-    def put(writer: Writer, index: Int, value: Long): Unit =
+    def put(writer: NativeWriter, index: Int, value: Long): Unit =
       writer.putLong(index, value)
   }
 
   implicit val stringGetter = new Getter[String] {
-    def get(reader: Reader, index: Int): String =
+    def get(reader: NativeReader, index: Int): String =
       reader.getString(index)
   }
 
   implicit val stringPutter = new Putter[String] {
-    def put(writer: Writer, index: Int, value: String): Unit =
+    def put(writer: NativeWriter, index: Int, value: String): Unit =
       writer.putString(index, value)
   }
 
-  implicit class RichReader(reader: Reader) {
+  implicit class RichReader(reader: NativeReader) {
 
     def get[T: Getter](index: Int): Option[T] =
       if (reader.isNull(index)) None
@@ -65,7 +65,7 @@ package object jni {
     }
   }
 
-  implicit class RichWriter(writer: Writer) {
+  implicit class RichWriter(writer: NativeWriter) {
 
     def put[T: Putter](index: Int, value: T): Unit =
       implicitly[Putter[T]].put(writer, index, value)
