@@ -30,6 +30,16 @@ class NativeReaderTest extends Test {
     }
   }
 
+  it should "read metadata" in test { file =>
+    withWriter(file) { writer =>
+      writer.setMetadata("foo")
+      writer.finish()
+    }
+    withReader(file) { reader =>
+      reader.metadata shouldEqual Some("foo")
+    }
+  }
+
   it should "return none if a file has no metadata" in test { file =>
     empty(file)
     withReader(file) { reader =>

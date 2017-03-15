@@ -70,16 +70,6 @@ class NativeWriterTest extends Test {
     }
   }
 
-  it should "write metadata" in test { file =>
-    withWriter(file) { writer =>
-      writer.setMetadata("foo")
-      writer.finish()
-    }
-    withReader(file) { reader =>
-      reader.metadata shouldEqual Some("foo")
-    }
-  }
-
   it should "fail with an NPE after close()" in test { file =>
     withWriter(file) { writer =>
       writer.addColumn(ColumnType.Int, "int")
