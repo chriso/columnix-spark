@@ -1,5 +1,7 @@
 package com.columnix.jni
 
+import com.columnix.jni.implicits._
+
 class NativeWriterTest extends Test {
 
   behavior of "NativeWriter"

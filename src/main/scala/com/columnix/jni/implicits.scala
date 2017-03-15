@@ -1,6 +1,6 @@
-package com.columnix
+package com.columnix.jni
 
-package object jni {
+object implicits {
 
   sealed trait Getter[T] {
     def get(reader: NativeReader, index: Int): T
