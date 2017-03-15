@@ -1,6 +1,6 @@
 package com.columnix.spark
 
-import com.columnix.jni.{Filter, NativeReader}
+import com.columnix.file.{FileReader, Filter}
 import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.expressions.SpecificInternalRow
 import org.apache.spark.sql.types._
@@ -8,7 +8,7 @@ import org.apache.spark.unsafe.types.UTF8String
 import org.apache.spark.{TaskContext, TaskKilledException}
 
 case class RowIterator(context: TaskContext,
-                       reader: NativeReader,
+                       reader: FileReader,
                        columns: Array[Int],
                        dataTypes: Array[DataType]) extends Iterator[InternalRow] {
 
@@ -90,7 +90,7 @@ object RowIterator {
             columns: Array[Int],
             dataTypes: Array[DataType]): Iterator[InternalRow] = {
 
-    val reader = new NativeReader(path, filter)
+    val reader = new FileReader(path, filter)
 
     if (columns.isEmpty) {
       val rowCount = reader.rowCount

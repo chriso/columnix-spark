@@ -1,6 +1,6 @@
-package com.columnix.jni.c
+package com.columnix.jni
 
-private[jni] class Reader {
+private[columnix] class Reader {
 
   System.loadLibrary("columnix")
 

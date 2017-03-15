@@ -1,34 +1,47 @@
 package com.columnix.jni
 
-private[jni] object Predicate {
+private[columnix] class Predicate {
 
-  private[this] val native = new c.Predicate
+  System.loadLibrary("columnix")
 
-  def fromFilter(filter: Filter): c.Predicate.Pointer = filter match {
-    case IsNull(column) => native.isNull(column)
-    case IsNotNull(column) => native.negate(native.isNull(column))
-    // operators
-    case Not(operand) => native.negate(fromFilter(operand))
-    case and: And => native.and(and.operands map fromFilter)
-    case or: Or => native.or(or.operands map fromFilter)
-    // boolean
-    case BooleanEquals(column, value) => native.booleanEquals(column, value)
-    // int
-    case IntEquals(column, value) => native.intEquals(column, value)
-    case IntGreaterThan(column, value) => native.intGreaterThan(column, value)
-    case IntLessThan(column, value) => native.intLessThan(column, value)
-    // long
-    case LongEquals(column, value) => native.longEquals(column, value)
-    case LongGreaterThan(column, value) => native.longGreaterThan(column, value)
-    case LongLessThan(column, value) => native.longLessThan(column, value)
-    // string
-    case StringEquals(column, value, caseSensitive) =>
-      native.stringEquals(column, value, caseSensitive)
-    case StringGreaterThan(column, value, caseSensitive) =>
-      native.stringGreaterThan(column, value, caseSensitive)
-    case StringLessThan(column, value, caseSensitive) =>
-      native.stringLessThan(column, value, caseSensitive)
-    case StringContains(column, value, location, caseSensitive) =>
-      native.stringContains(column, value, location.id, caseSensitive)
-  }
+  import Predicate.Pointer
+
+  @native def booleanEquals(column: Int, value: Boolean): Pointer = ???
+
+  @native def intEquals(column: Int, value: Int): Pointer = ???
+
+  @native def intGreaterThan(column: Int, value: Int): Pointer = ???
+
+  @native def intLessThan(column: Int, value: Int): Pointer = ???
+
+  @native def longEquals(column: Int, value: Long): Pointer = ???
+
+  @native def longGreaterThan(column: Int, value: Long): Pointer = ???
+
+  @native def longLessThan(column: Int, value: Long): Pointer = ???
+
+  @native def stringEquals(column: Int, value: String,
+                           caseSensitive: Boolean): Pointer = ???
+
+  @native def stringGreaterThan(column: Int, value: String,
+                                caseSensitive: Boolean): Pointer = ???
+
+  @native def stringLessThan(column: Int, value: String,
+                             caseSensitive: Boolean): Pointer = ???
+
+  @native def stringContains(column: Int, value: String, location: Int,
+                             caseSensitive: Boolean): Pointer = ???
+
+  @native def and(predicates: Array[Pointer]): Pointer = ???
+
+  @native def or(predicates: Array[Pointer]): Pointer = ???
+
+  @native def negate(predicate: Pointer): Pointer = ???
+
+  @native def isNull(column: Int): Pointer = ???
+}
+
+object Predicate {
+
+  type Pointer = Long
 }

@@ -1,4 +1,6 @@
-package com.columnix.jni
+package com.columnix.file
+
+import com.columnix.jni.StringLocation
 
 sealed trait Filter
 

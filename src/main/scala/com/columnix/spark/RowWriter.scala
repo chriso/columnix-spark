@@ -1,6 +1,7 @@
 package com.columnix.spark
 
-import com.columnix.jni.{ColumnCompression, ColumnType, NativeWriter}
+import com.columnix.file.FileWriter
+import com.columnix.jni.{ColumnCompression, ColumnType}
 import org.apache.spark.sql.Row
 import org.apache.spark.sql.execution.datasources.OutputWriter
 import org.apache.spark.sql.types._
@@ -8,7 +9,7 @@ import org.apache.spark.sql.types._
 case class RowWriter(path: String, schema: StructType,
                      parameters: Map[String, String]) extends OutputWriter {
 
-  private[this] val writer = new NativeWriter(path)
+  private[this] val writer = new FileWriter(path)
 
   private[this] val dataTypes = schema.fields map (_.dataType)
 

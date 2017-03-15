@@ -1,11 +1,12 @@
-package com.columnix.jni
+package com.columnix.file
 
 import com.columnix.Test
-import com.columnix.jni.implicits._
+import com.columnix.file.implicits._
+import com.columnix.jni._
 
-class Predicate$Test extends Test {
+class PredicateTranslator$Test extends Test {
 
-  behavior of "Predicate$"
+  behavior of "PredicateTranslator$"
 
   it should "filter by boolean" in test { file =>
     withWriter(file) { writer =>

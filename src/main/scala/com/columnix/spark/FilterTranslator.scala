@@ -1,6 +1,7 @@
 package com.columnix.spark
 
-import com.columnix.jni._
+import com.columnix.file._
+import com.columnix.jni.StringLocation
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{sources => spark}
 

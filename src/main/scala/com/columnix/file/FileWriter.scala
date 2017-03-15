@@ -1,11 +1,13 @@
-package com.columnix.jni
+package com.columnix.file
 
-class NativeWriter(path: String, rowGroupSize: Long = 1000000L)
+import com.columnix.jni._
+
+class FileWriter(path: String, rowGroupSize: Long = 1000000L)
   extends Serializable {
 
   require(rowGroupSize > 0L, "invalid row group size")
 
-  private[this] val native = new c.Writer
+  private[this] val native = new Writer
 
   private[this] var ptr = native.create(path, rowGroupSize)
 

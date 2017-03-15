@@ -1,12 +1,11 @@
-package com.columnix.jni
-
-import java.nio.file.Path
+package com.columnix.file
 
 import com.columnix.Test
+import com.columnix.jni.ColumnType
 
-class NativeReaderTest extends Test {
+class FileReaderTest extends Test {
 
-  behavior of "NativeReader"
+  behavior of "FileReader"
 
   it should "have idempotent close()" in test { file =>
     empty(file)

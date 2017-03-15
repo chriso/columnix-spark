@@ -1,11 +1,12 @@
-package com.columnix.jni
+package com.columnix.file
 
 import com.columnix.Test
-import com.columnix.jni.implicits._
+import com.columnix.file.implicits._
+import com.columnix.jni.ColumnType
 
-class NativeWriterTest extends Test {
+class FileWriterTest extends Test {
 
-  behavior of "NativeWriter"
+  behavior of "FileWriter"
 
   it should "have idempotent finish()" in test { file =>
     withWriter(file) { writer =>

@@ -2,7 +2,7 @@ package com.columnix
 
 import java.nio.file.{Files, Path}
 
-import com.columnix.jni.{Filter, NativeReader, NativeWriter}
+import com.columnix.file.{FileReader, FileWriter, Filter}
 import org.scalatest.{FlatSpec, Matchers}
 
 trait Test extends FlatSpec with Matchers {
@@ -13,15 +13,15 @@ trait Test extends FlatSpec with Matchers {
     finally Files.delete(file)
   }
 
-  def withWriter[R](path: Path)(block: NativeWriter => R): R = {
-    val writer = new NativeWriter(path.toString)
+  def withWriter[R](path: Path)(block: FileWriter => R): R = {
+    val writer = new FileWriter(path.toString)
     try block(writer)
     finally writer.close()
   }
 
   def withReader[R](path: Path, filter: Option[Filter] = None)
-                   (block: NativeReader => R): R = {
-    val reader = new NativeReader(path.toString, filter)
+                   (block: FileReader => R): R = {
+    val reader = new FileReader(path.toString, filter)
     try block(reader)
     finally reader.close()
   }

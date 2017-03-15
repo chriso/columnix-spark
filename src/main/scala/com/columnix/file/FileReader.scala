@@ -1,13 +1,15 @@
-package com.columnix.jni
+package com.columnix.file
 
-class NativeReader(path: String, filter: Option[Filter] = None) {
+import com.columnix.jni._
 
-  private[this] val native = new c.Reader
+class FileReader(path: String, filter: Option[Filter] = None) {
+
+  private[this] val native = new Reader
 
   private[this] var ptr = filter match {
     case None => native.create(path)
     case Some(f) =>
-      val predicate = Predicate.fromFilter(f)
+      val predicate = PredicateTranslator.fromFilter(f)
       if (predicate == 0L)
         throw new NullPointerException
       native.createMatching(path, predicate)

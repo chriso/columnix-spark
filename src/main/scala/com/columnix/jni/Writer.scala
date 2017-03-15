@@ -1,6 +1,6 @@
-package com.columnix.jni.c
+package com.columnix.jni
 
-private[jni] class Writer extends Serializable {
+private[columnix] class Writer extends Serializable {
 
   System.loadLibrary("columnix")
 
