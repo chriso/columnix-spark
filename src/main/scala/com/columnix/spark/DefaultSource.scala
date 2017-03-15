@@ -14,7 +14,7 @@ class DefaultSource extends RelationProvider with CreatableRelationProvider
                      parameters: Map[String, String]): BaseRelation = {
 
     val path = parameters.getOrElse("path", sys.error("'path' must be specified"))
-    ColumnixRelation(path, sqlContext)
+    ColumnixRelation(path)(sqlContext)
   }
 
   def createRelation(sqlContext: SQLContext,
@@ -30,7 +30,7 @@ class DefaultSource extends RelationProvider with CreatableRelationProvider
       else if (mode == SaveMode.ErrorIfExists)
         throw new RuntimeException("file exists")
       else if (mode == SaveMode.Ignore)
-        return ColumnixRelation(path, sqlContext)
+        return ColumnixRelation(path)(sqlContext)
     }
 
     val writer = RowWriter(path, data.schema, parameters)
@@ -38,6 +38,6 @@ class DefaultSource extends RelationProvider with CreatableRelationProvider
     try data foreach writer.write _
     finally writer.close()
 
-    ColumnixRelation(path, sqlContext)
+    ColumnixRelation(path, Some(data.schema))(sqlContext)
   }
 }
