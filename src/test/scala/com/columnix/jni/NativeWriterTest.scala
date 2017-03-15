@@ -11,16 +11,6 @@ class NativeWriterTest extends Test {
     }
   }
 
-  it should "write metadata" in test { file =>
-    withWriter(file) { writer =>
-      writer.setMetadata("foo")
-      writer.finish()
-    }
-    withReader(file) { reader =>
-      reader.metadata shouldEqual Some("foo")
-    }
-  }
-
   it should "have idempotent close()" in test { file =>
     withWriter(file) { writer =>
       writer.close()
@@ -79,4 +69,55 @@ class NativeWriterTest extends Test {
       reader.collect[String](3) shouldEqual Seq(None, None, Some("foo"), Some("bar"), None)
     }
   }
+
+  it should "write metadata" in test { file =>
+    withWriter(file) { writer =>
+      writer.setMetadata("foo")
+      writer.finish()
+    }
+    withReader(file) { reader =>
+      reader.metadata shouldEqual Some("foo")
+    }
+  }
+
+  it should "fail with an NPE after close()" in test { file =>
+    withWriter(file) { writer =>
+      writer.addColumn(ColumnType.Int, "int")
+      writer.addColumn(ColumnType.Long, "long")
+      writer.addColumn(ColumnType.Boolean, "bool")
+      writer.addColumn(ColumnType.String, "str")
+      writer.close()
+
+      a[NullPointerException] should be thrownBy writer.finish()
+      a[NullPointerException] should be thrownBy writer.setMetadata("foo")
+      a[NullPointerException] should be thrownBy writer.addColumn(ColumnType.Int, "foo")
+      a[NullPointerException] should be thrownBy writer.putNull(0)
+      a[NullPointerException] should be thrownBy writer.putInt(0, 10)
+      a[NullPointerException] should be thrownBy writer.putLong(1, 10L)
+      a[NullPointerException] should be thrownBy writer.putBoolean(2, true)
+      a[NullPointerException] should be thrownBy writer.putString(3, "foo")
+    }
+  }
+
+  it should "fail if a column index is out of bounds" in test { file =>
+    withWriter(file) { writer =>
+      writer.addColumn(ColumnType.Int, "int")
+      writer.addColumn(ColumnType.Long, "long")
+      writer.addColumn(ColumnType.Boolean, "bool")
+      writer.addColumn(ColumnType.String, "str")
+
+      an[IndexOutOfBoundsException] should be thrownBy writer.putNull(-1)
+      an[IndexOutOfBoundsException] should be thrownBy writer.putInt(-1, 10)
+      an[IndexOutOfBoundsException] should be thrownBy writer.putLong(-1, 10L)
+      an[IndexOutOfBoundsException] should be thrownBy writer.putBoolean(-1, true)
+      an[IndexOutOfBoundsException] should be thrownBy writer.putString(-1, "foo")
+
+      an[IndexOutOfBoundsException] should be thrownBy writer.putNull(4)
+      an[IndexOutOfBoundsException] should be thrownBy writer.putInt(4, 10)
+      an[IndexOutOfBoundsException] should be thrownBy writer.putLong(4, 10L)
+      an[IndexOutOfBoundsException] should be thrownBy writer.putBoolean(4, true)
+      an[IndexOutOfBoundsException] should be thrownBy writer.putString(4, "foo")
+    }
+  }
+
 }

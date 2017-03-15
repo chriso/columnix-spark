@@ -1,11 +1,16 @@
 package com.columnix.jni
 
+import java.nio.file.Path
+
 class NativeReaderTest extends Test {
 
   behavior of "NativeReader"
 
-  it should "have idempotent close()" in test { file =>
+  private def empty(file: Path): Unit =
     withWriter(file)(_.finish())
+
+  it should "have idempotent close()" in test { file =>
+    empty(file)
     withReader(file) { reader =>
       reader.close()
       reader.close()
@@ -26,9 +31,70 @@ class NativeReaderTest extends Test {
   }
 
   it should "return none if a file has no metadata" in test { file =>
-    withWriter(file)(_.finish())
+    empty(file)
     withReader(file) { reader =>
       reader.metadata shouldEqual None
     }
   }
+
+  it should "fail with an NPE after close()" in test { file =>
+    withWriter(file) { writer =>
+      writer.addColumn(ColumnType.Int, "int")
+      writer.addColumn(ColumnType.Long, "long")
+      writer.addColumn(ColumnType.Boolean, "bool")
+      writer.addColumn(ColumnType.String, "str")
+      writer.finish()
+    }
+    withReader(file) { reader =>
+      reader.close()
+      a[NullPointerException] should be thrownBy reader.rowCount
+      a[NullPointerException] should be thrownBy reader.rewind()
+      a[NullPointerException] should be thrownBy reader.next
+      a[NullPointerException] should be thrownBy reader.metadata
+      a[NullPointerException] should be thrownBy reader.columnName(0)
+      a[NullPointerException] should be thrownBy reader.columnType(0)
+      a[NullPointerException] should be thrownBy reader.columnEncoding(0)
+      a[NullPointerException] should be thrownBy reader.columnCompression(0)
+      a[NullPointerException] should be thrownBy reader.isNull(0)
+      a[NullPointerException] should be thrownBy reader.getInt(0)
+      a[NullPointerException] should be thrownBy reader.getLong(1)
+      a[NullPointerException] should be thrownBy reader.getBoolean(2)
+      a[NullPointerException] should be thrownBy reader.getString(3)
+      a[NullPointerException] should be thrownBy reader.getStringBytes(3)
+    }
+  }
+
+  it should "fail if a column index is out of bounds" in test { file =>
+    withWriter(file) { writer =>
+      writer.addColumn(ColumnType.Int, "int")
+      writer.addColumn(ColumnType.Long, "long")
+      writer.addColumn(ColumnType.Boolean, "bool")
+      writer.addColumn(ColumnType.String, "str")
+      writer.finish()
+    }
+    withReader(file) { reader =>
+      an[IndexOutOfBoundsException] should be thrownBy reader.columnName(-1)
+      an[IndexOutOfBoundsException] should be thrownBy reader.columnType(-1)
+      an[IndexOutOfBoundsException] should be thrownBy reader.columnEncoding(-1)
+      an[IndexOutOfBoundsException] should be thrownBy reader.columnCompression(-1)
+      an[IndexOutOfBoundsException] should be thrownBy reader.isNull(-1)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getInt(-1)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getLong(-1)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getBoolean(-1)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getString(-1)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getStringBytes(-1)
+
+      an[IndexOutOfBoundsException] should be thrownBy reader.columnName(4)
+      an[IndexOutOfBoundsException] should be thrownBy reader.columnType(4)
+      an[IndexOutOfBoundsException] should be thrownBy reader.columnEncoding(4)
+      an[IndexOutOfBoundsException] should be thrownBy reader.columnCompression(4)
+      an[IndexOutOfBoundsException] should be thrownBy reader.isNull(4)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getInt(4)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getLong(4)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getBoolean(4)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getString(4)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getStringBytes(4)
+    }
+  }
+
 }
