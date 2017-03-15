@@ -39,8 +39,6 @@ private[jni] class Predicate {
   @native def negate(predicate: Pointer): Pointer = ???
 
   @native def isNull(column: Int): Pointer = ???
-
-  @native def cFree(predicate: Pointer): Unit = ???
 }
 
 object Predicate {

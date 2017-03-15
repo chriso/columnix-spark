@@ -33,11 +33,9 @@ class DefaultSource extends RelationProvider with CreatableRelationProvider
         return ColumnixRelation(path, sqlContext)
     }
 
-    // FIXME: configurable compression, encoding and row group size
+    val writer = RowWriter(path, data.schema, parameters)
 
-    val writer = ColumnixWriter(path, data)
-
-    try writer.write()
+    try data foreach writer.write _
     finally writer.close()
 
     ColumnixRelation(path, sqlContext)

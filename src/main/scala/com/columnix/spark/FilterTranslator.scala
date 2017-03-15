@@ -4,7 +4,7 @@ import com.columnix.jni._
 import org.apache.spark.sql.types._
 import org.apache.spark.sql.{sources => spark}
 
-private[spark] case class FilterTranslator(columns: Map[String, Int], types: Array[DataType]) {
+case class FilterTranslator(columns: Map[String, Int], types: Array[DataType]) {
 
   def translateFilters(filters: spark.Filter*): Option[Filter] =
     filters match {

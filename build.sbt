@@ -1,4 +1,6 @@
-name := "columnix"
+name := "spark"
+
+organization := "com.columnix"
 
 version := "0.1.0"
 
