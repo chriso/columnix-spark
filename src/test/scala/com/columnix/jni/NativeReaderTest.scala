@@ -2,12 +2,11 @@ package com.columnix.jni
 
 import java.nio.file.Path
 
+import com.columnix.Test
+
 class NativeReaderTest extends Test {
 
   behavior of "NativeReader"
-
-  private def empty(file: Path): Unit =
-    withWriter(file)(_.finish())
 
   it should "have idempotent close()" in test { file =>
     empty(file)

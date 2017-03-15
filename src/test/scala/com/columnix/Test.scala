@@ -1,7 +1,8 @@
-package com.columnix.jni
+package com.columnix
 
 import java.nio.file.{Files, Path}
 
+import com.columnix.jni.{Filter, NativeReader, NativeWriter}
 import org.scalatest.{FlatSpec, Matchers}
 
 trait Test extends FlatSpec with Matchers {
@@ -24,4 +25,7 @@ trait Test extends FlatSpec with Matchers {
     try block(reader)
     finally reader.close()
   }
+
+  def empty(file: Path): Unit =
+    withWriter(file)(_.finish())
 }

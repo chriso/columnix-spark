@@ -1,5 +1,6 @@
 package com.columnix.jni
 
+import com.columnix.Test
 import com.columnix.jni.implicits._
 
 class NativeWriterTest extends Test {
