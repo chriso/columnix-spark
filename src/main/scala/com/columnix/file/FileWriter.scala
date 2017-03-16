@@ -69,6 +69,16 @@ class FileWriter(path: String, rowGroupSize: Long = 1000000L)
     native.putLong(ptr, column, value)
   }
 
+  def putFloat(column: Int, value: Float): Unit = {
+    checkBounds(column)
+    native.putFloat(ptr, column, value)
+  }
+
+  def putDouble(column: Int, value: Double): Unit = {
+    checkBounds(column)
+    native.putDouble(ptr, column, value)
+  }
+
   def putString(column: Int, value: String): Unit = {
     checkBounds(column)
     native.putString(ptr, column, value)

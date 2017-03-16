@@ -2,7 +2,7 @@ package com.columnix.jni
 
 object ColumnType extends Enumeration {
   type ColumnType = Value
-  val Boolean, Int, Long, String = Value
+  val Boolean, Int, Long, Float, Double, String = Value
 }
 
 object ColumnEncoding extends Enumeration {

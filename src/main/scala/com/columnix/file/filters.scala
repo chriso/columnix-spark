@@ -37,6 +37,18 @@ case class LongGreaterThan(column: Int, value: Long) extends Filter
 
 case class LongLessThan(column: Int, value: Long) extends Filter
 
+case class FloatEquals(column: Int, value: Float) extends Filter
+
+case class FloatGreaterThan(column: Int, value: Float) extends Filter
+
+case class FloatLessThan(column: Int, value: Float) extends Filter
+
+case class DoubleEquals(column: Int, value: Double) extends Filter
+
+case class DoubleGreaterThan(column: Int, value: Double) extends Filter
+
+case class DoubleLessThan(column: Int, value: Double) extends Filter
+
 case class StringEquals(column: Int, value: String,
                         caseSensitive: Boolean = true) extends Filter
 

@@ -47,9 +47,11 @@ class FileReaderTest extends Test {
 
   it should "fail with an NPE after close()" in test { file =>
     withWriter(file) { writer =>
+      writer.addColumn(ColumnType.Boolean, "bool")
       writer.addColumn(ColumnType.Int, "int")
       writer.addColumn(ColumnType.Long, "long")
-      writer.addColumn(ColumnType.Boolean, "bool")
+      writer.addColumn(ColumnType.Float, "float")
+      writer.addColumn(ColumnType.Double, "double")
       writer.addColumn(ColumnType.String, "str")
       writer.finish()
     }
@@ -64,19 +66,23 @@ class FileReaderTest extends Test {
       a[NullPointerException] should be thrownBy reader.columnEncoding(0)
       a[NullPointerException] should be thrownBy reader.columnCompression(0)
       a[NullPointerException] should be thrownBy reader.isNull(0)
-      a[NullPointerException] should be thrownBy reader.getInt(0)
-      a[NullPointerException] should be thrownBy reader.getLong(1)
-      a[NullPointerException] should be thrownBy reader.getBoolean(2)
-      a[NullPointerException] should be thrownBy reader.getString(3)
-      a[NullPointerException] should be thrownBy reader.getStringBytes(3)
+      a[NullPointerException] should be thrownBy reader.getBoolean(0)
+      a[NullPointerException] should be thrownBy reader.getInt(1)
+      a[NullPointerException] should be thrownBy reader.getLong(2)
+      a[NullPointerException] should be thrownBy reader.getFloat(3)
+      a[NullPointerException] should be thrownBy reader.getDouble(4)
+      a[NullPointerException] should be thrownBy reader.getString(5)
+      a[NullPointerException] should be thrownBy reader.getStringBytes(5)
     }
   }
 
   it should "fail if a column index is out of bounds" in test { file =>
     withWriter(file) { writer =>
+      writer.addColumn(ColumnType.Boolean, "bool")
       writer.addColumn(ColumnType.Int, "int")
       writer.addColumn(ColumnType.Long, "long")
-      writer.addColumn(ColumnType.Boolean, "bool")
+      writer.addColumn(ColumnType.Float, "float")
+      writer.addColumn(ColumnType.Double, "double")
       writer.addColumn(ColumnType.String, "str")
       writer.finish()
     }
@@ -86,22 +92,26 @@ class FileReaderTest extends Test {
       an[IndexOutOfBoundsException] should be thrownBy reader.columnEncoding(-1)
       an[IndexOutOfBoundsException] should be thrownBy reader.columnCompression(-1)
       an[IndexOutOfBoundsException] should be thrownBy reader.isNull(-1)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getBoolean(-1)
       an[IndexOutOfBoundsException] should be thrownBy reader.getInt(-1)
       an[IndexOutOfBoundsException] should be thrownBy reader.getLong(-1)
-      an[IndexOutOfBoundsException] should be thrownBy reader.getBoolean(-1)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getFloat(-1)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getDouble(-1)
       an[IndexOutOfBoundsException] should be thrownBy reader.getString(-1)
       an[IndexOutOfBoundsException] should be thrownBy reader.getStringBytes(-1)
 
-      an[IndexOutOfBoundsException] should be thrownBy reader.columnName(4)
-      an[IndexOutOfBoundsException] should be thrownBy reader.columnType(4)
-      an[IndexOutOfBoundsException] should be thrownBy reader.columnEncoding(4)
-      an[IndexOutOfBoundsException] should be thrownBy reader.columnCompression(4)
-      an[IndexOutOfBoundsException] should be thrownBy reader.isNull(4)
-      an[IndexOutOfBoundsException] should be thrownBy reader.getInt(4)
-      an[IndexOutOfBoundsException] should be thrownBy reader.getLong(4)
-      an[IndexOutOfBoundsException] should be thrownBy reader.getBoolean(4)
-      an[IndexOutOfBoundsException] should be thrownBy reader.getString(4)
-      an[IndexOutOfBoundsException] should be thrownBy reader.getStringBytes(4)
+      an[IndexOutOfBoundsException] should be thrownBy reader.columnName(6)
+      an[IndexOutOfBoundsException] should be thrownBy reader.columnType(6)
+      an[IndexOutOfBoundsException] should be thrownBy reader.columnEncoding(6)
+      an[IndexOutOfBoundsException] should be thrownBy reader.columnCompression(6)
+      an[IndexOutOfBoundsException] should be thrownBy reader.isNull(6)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getBoolean(6)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getInt(6)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getLong(6)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getFloat(6)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getDouble(6)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getString(6)
+      an[IndexOutOfBoundsException] should be thrownBy reader.getStringBytes(6)
     }
   }
 

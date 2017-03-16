@@ -25,6 +25,12 @@ case class RowWriter(path: String, schema: StructType,
     case _: LongType =>
       (row: Row, i: Int) => writer.putLong(i, row.getLong(i))
 
+    case _: FloatType =>
+      (row: Row, i: Int) => writer.putFloat(i, row.getFloat(i))
+
+    case _: DoubleType =>
+      (row: Row, i: Int) => writer.putDouble(i, row.getDouble(i))
+
     case _: StringType =>
       (row: Row, i: Int) => writer.putString(i, row.getString(i))
   }
@@ -34,6 +40,8 @@ case class RowWriter(path: String, schema: StructType,
       case BooleanType => ColumnType.Boolean
       case IntegerType => ColumnType.Int
       case LongType => ColumnType.Long
+      case FloatType => ColumnType.Float
+      case DoubleType => ColumnType.Double
       case StringType => ColumnType.String
       case _ =>
         throw new RuntimeException(s"unsupported column type: $field")

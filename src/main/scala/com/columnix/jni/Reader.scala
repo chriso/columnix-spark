@@ -40,6 +40,10 @@ private[columnix] class Reader {
 
   @native def getLong(reader: Pointer, index: Int): Long = ???
 
+  @native def getFloat(reader: Pointer, index: Int): Float = ???
+
+  @native def getDouble(reader: Pointer, index: Int): Double = ???
+
   @native def getString(reader: Pointer, index: Int): String = ???
 
   @native def getStringBytes(reader: Pointer, index: Int): Array[Byte] = ???

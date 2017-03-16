@@ -80,6 +80,56 @@ class PredicateTranslator$Test extends Test {
     }
   }
 
+  it should "filter by float" in test { file =>
+    withWriter(file) { writer =>
+      writer.addColumn(ColumnType.Float, "foo")
+      for (i <- Seq(1.1f, 3.3f, 2.2f, 4.4f, 5.5f, 6.6f, 7.7f, 8.8f, 9.9f, 10f))
+        writer.putFloat(0, i)
+      writer.finish()
+    }
+
+    val expected = Seq(
+      FloatEquals(0, 3.3f) -> Seq(3.3f),
+      FloatEquals(0, 999.9f) -> Nil,
+      Not(FloatEquals(0, 3.3f)) -> Seq(1.1f, 2.2f, 4.4f, 5.5f, 6.6f, 7.7f, 8.8f, 9.9f, 10f),
+      FloatGreaterThan(0, 7f) -> Seq(7.7f, 8.8f, 9.9f, 10f),
+      FloatLessThan(0, 3f) -> Seq(1.1f, 2.2f),
+      Or(FloatEquals(0, 3.3f), FloatEquals(0, 7.7f), FloatEquals(0, 9.9f)) -> Seq(3.3f, 7.7f, 9.9f),
+      And(FloatGreaterThan(0, 4f), FloatLessThan(0, 7.7f)) -> Seq(4.4f, 5.5f, 6.6f)
+    )
+
+    for ((filter, result) <- expected) {
+      withReader(file, Some(filter)) { reader =>
+        reader.collect[Float](0).flatten shouldEqual result
+      }
+    }
+  }
+
+  it should "filter by double" in test { file =>
+    withWriter(file) { writer =>
+      writer.addColumn(ColumnType.Double, "foo")
+      for (i <- Seq(1.1, 3.3, 2.2, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10))
+        writer.putDouble(0, i)
+      writer.finish()
+    }
+
+    val expected = Seq(
+      DoubleEquals(0, 3.3) -> Seq(3.3),
+      DoubleEquals(0, 999.9) -> Nil,
+      Not(DoubleEquals(0, 3.3)) -> Seq(1.1, 2.2, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10),
+      DoubleGreaterThan(0, 7) -> Seq(7.7, 8.8, 9.9, 10),
+      DoubleLessThan(0, 3) -> Seq(1.1, 2.2),
+      Or(DoubleEquals(0, 3.3), DoubleEquals(0, 7.7), DoubleEquals(0, 9.9)) -> Seq(3.3, 7.7, 9.9),
+      And(DoubleGreaterThan(0, 4), DoubleLessThan(0, 7.7)) -> Seq(4.4, 5.5, 6.6)
+    )
+
+    for ((filter, result) <- expected) {
+      withReader(file, Some(filter)) { reader =>
+        reader.collect[Double](0).flatten shouldEqual result
+      }
+    }
+  }
+
   it should "filter by string" in test { file =>
     withWriter(file) { writer =>
       writer.addColumn(ColumnType.String, "foo")

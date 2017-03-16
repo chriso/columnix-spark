@@ -59,6 +59,16 @@ case class RowIterator(context: TaskContext,
           if (reader.isNull(in)) mutableRow.setNullAt(out)
           else mutableRow.setLong(out, reader.getLong(in))
 
+      case FloatType =>
+        () =>
+          if (reader.isNull(in)) mutableRow.setNullAt(out)
+          else mutableRow.setFloat(out, reader.getFloat(in))
+
+      case DoubleType =>
+        () =>
+          if (reader.isNull(in)) mutableRow.setNullAt(out)
+          else mutableRow.setDouble(out, reader.getDouble(in))
+
       case StringType =>
         () =>
           if (reader.isNull(in)) mutableRow.setNullAt(out)

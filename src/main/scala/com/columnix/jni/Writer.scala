@@ -25,5 +25,9 @@ private[columnix] class Writer extends Serializable {
 
   @native def putLong(writer: Pointer, index: Int, value: Long): Unit = ???
 
+  @native def putFloat(writer: Pointer, index: Int, value: Float): Unit = ???
+
+  @native def putDouble(writer: Pointer, index: Int, value: Double): Unit = ???
+
   @native def putString(writer: Pointer, index: Int, value: String): Unit = ???
 }

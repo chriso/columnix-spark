@@ -40,6 +40,26 @@ object implicits {
       writer.putLong(index, value)
   }
 
+  implicit val floatGetter = new Getter[Float] {
+    def get(reader: FileReader, index: Int): Float =
+      reader.getFloat(index)
+  }
+
+  implicit val floatPutter = new Putter[Float] {
+    def put(writer: FileWriter, index: Int, value: Float): Unit =
+      writer.putFloat(index, value)
+  }
+
+  implicit val doubleGetter = new Getter[Double] {
+    def get(reader: FileReader, index: Int): Double =
+      reader.getDouble(index)
+  }
+
+  implicit val doublePutter = new Putter[Double] {
+    def put(writer: FileWriter, index: Int, value: Double): Unit =
+      writer.putDouble(index, value)
+  }
+
   implicit val stringGetter = new Getter[String] {
     def get(reader: FileReader, index: Int): String =
       reader.getString(index)

@@ -96,6 +96,16 @@ class FileReader(path: String, filter: Option[Filter] = None) {
     native.getLong(ptr, column)
   }
 
+  def getFloat(column: Int): Float = {
+    checkBounds(column)
+    native.getFloat(ptr, column)
+  }
+
+  def getDouble(column: Int): Double = {
+    checkBounds(column)
+    native.getDouble(ptr, column)
+  }
+
   def getString(column: Int): String = {
     checkBounds(column)
     native.getString(ptr, column)

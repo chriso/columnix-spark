@@ -23,6 +23,14 @@ private[file] object PredicateTranslator {
     case LongEquals(column, value) => native.longEquals(column, value)
     case LongGreaterThan(column, value) => native.longGreaterThan(column, value)
     case LongLessThan(column, value) => native.longLessThan(column, value)
+    // float
+    case FloatEquals(column, value) => native.floatEquals(column, value)
+    case FloatGreaterThan(column, value) => native.floatGreaterThan(column, value)
+    case FloatLessThan(column, value) => native.floatLessThan(column, value)
+    // double
+    case DoubleEquals(column, value) => native.doubleEquals(column, value)
+    case DoubleGreaterThan(column, value) => native.doubleGreaterThan(column, value)
+    case DoubleLessThan(column, value) => native.doubleLessThan(column, value)
     // string
     case StringEquals(column, value, caseSensitive) =>
       native.stringEquals(column, value, caseSensitive)

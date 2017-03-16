@@ -45,6 +45,8 @@ case class FilterTranslator(columns: Map[String, Int], types: Array[DataType]) {
       case BooleanType => BooleanEquals(column, toBoolean(value))
       case IntegerType => IntEquals(column, toInt(value))
       case LongType => LongEquals(column, toLong(value))
+      case FloatType => FloatEquals(column, toFloat(value))
+      case DoubleType => DoubleEquals(column, toDouble(value))
       case StringType => StringEquals(column, toString(value))
     }
 
@@ -52,6 +54,8 @@ case class FilterTranslator(columns: Map[String, Int], types: Array[DataType]) {
     types(column) match {
       case IntegerType => IntGreaterThan(column, toInt(value))
       case LongType => LongGreaterThan(column, toLong(value))
+      case FloatType => FloatGreaterThan(column, toFloat(value))
+      case DoubleType => DoubleGreaterThan(column, toDouble(value))
       case StringType => StringGreaterThan(column, toString(value))
     }
 
@@ -59,6 +63,8 @@ case class FilterTranslator(columns: Map[String, Int], types: Array[DataType]) {
     types(column) match {
       case IntegerType => IntLessThan(column, toInt(value))
       case LongType => LongLessThan(column, toLong(value))
+      case FloatType => FloatLessThan(column, toFloat(value))
+      case DoubleType => DoubleLessThan(column, toDouble(value))
       case StringType => StringLessThan(column, toString(value))
     }
 
@@ -73,6 +79,14 @@ case class FilterTranslator(columns: Map[String, Int], types: Array[DataType]) {
   private def toLong(value: Any): Long = value match {
     case long: Long => long
     case int: Int => int.toLong
+  }
+
+  private def toFloat(value: Any): Float = value match {
+    case float: Float => float
+  }
+
+  private def toDouble(value: Any): Double = value match {
+    case double: Double => double
   }
 
   private def toString(value: Any): String = value.toString

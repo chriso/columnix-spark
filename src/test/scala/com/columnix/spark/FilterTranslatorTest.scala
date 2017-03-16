@@ -2,7 +2,7 @@ package com.columnix.spark
 
 import com.columnix.file._
 import com.columnix.jni.StringLocation
-import org.apache.spark.sql.types.{BooleanType, IntegerType, LongType, StringType}
+import org.apache.spark.sql.types._
 import org.apache.spark.sql.{sources => spark}
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -11,8 +11,8 @@ class FilterTranslatorTest extends FlatSpec with Matchers {
   behavior of "FilterTranslator"
 
   private val translator = FilterTranslator(
-    Map("bool" -> 0, "int" -> 1, "long" -> 2, "str" -> 3),
-    Array(BooleanType, IntegerType, LongType, StringType))
+    Map("bool" -> 0, "int" -> 1, "long" -> 2, "float" -> 3, "double" -> 4, "str" -> 5),
+    Array(BooleanType, IntegerType, LongType, FloatType, DoubleType, StringType))
 
   it should "translate an array of spark filters" in {
     translator.translateFilters() shouldEqual None
@@ -61,22 +61,48 @@ class FilterTranslatorTest extends FlatSpec with Matchers {
       LongEquals(2, 3L))
   }
 
+  it should "translate float filters" in {
+    translate(spark.EqualTo("float", 10f)) shouldEqual FloatEquals(3, 10f)
+    translate(spark.EqualNullSafe("float", 10f)) shouldEqual And(IsNotNull(3), FloatEquals(3, 10f))
+    translate(spark.LessThan("float", 10f)) shouldEqual FloatLessThan(3, 10f)
+    translate(spark.LessThanOrEqual("float", 10f)) shouldEqual Not(FloatGreaterThan(3, 10f))
+    translate(spark.GreaterThan("float", 10f)) shouldEqual FloatGreaterThan(3, 10f)
+    translate(spark.GreaterThanOrEqual("float", 10f)) shouldEqual Not(FloatLessThan(3, 10f))
+    translate(spark.In("float", Array(1f, 2f, 3f))) shouldEqual Or(
+      FloatEquals(3, 1f),
+      FloatEquals(3, 2f),
+      FloatEquals(3, 3f))
+  }
+
+  it should "translate double filters" in {
+    translate(spark.EqualTo("double", 10.0)) shouldEqual DoubleEquals(4, 10.0)
+    translate(spark.EqualNullSafe("double", 10.0)) shouldEqual And(IsNotNull(4), DoubleEquals(4, 10.0))
+    translate(spark.LessThan("double", 10.0)) shouldEqual DoubleLessThan(4, 10.0)
+    translate(spark.LessThanOrEqual("double", 10.0)) shouldEqual Not(DoubleGreaterThan(4, 10.0))
+    translate(spark.GreaterThan("double", 10.0)) shouldEqual DoubleGreaterThan(4, 10.0)
+    translate(spark.GreaterThanOrEqual("double", 10.0)) shouldEqual Not(DoubleLessThan(4, 10.0))
+    translate(spark.In("double", Array(1.1, 2.2, 3.3))) shouldEqual Or(
+      DoubleEquals(4, 1.1),
+      DoubleEquals(4, 2.2),
+      DoubleEquals(4, 3.3))
+  }
+
   it should "translate string filters" in {
-    translate(spark.EqualTo("str", "foo")) shouldEqual StringEquals(3, "foo")
-    translate(spark.EqualTo("str", 10)) shouldEqual StringEquals(3, "10")
-    translate(spark.LessThan("str", "foo")) shouldEqual StringLessThan(3, "foo")
-    translate(spark.LessThan("str", 10L)) shouldEqual StringLessThan(3, "10")
-    translate(spark.GreaterThan("str", "foo")) shouldEqual StringGreaterThan(3, "foo")
-    translate(spark.GreaterThan("str", 10)) shouldEqual StringGreaterThan(3, "10")
-    translate(spark.LessThanOrEqual("str", "foo")) shouldEqual Not(StringGreaterThan(3, "foo"))
-    translate(spark.GreaterThanOrEqual("str", "foo")) shouldEqual Not(StringLessThan(3, "foo"))
-    translate(spark.StringStartsWith("str", "foo")) shouldEqual StringContains(3, "foo", StringLocation.Start)
-    translate(spark.StringEndsWith("str", "foo")) shouldEqual StringContains(3, "foo", StringLocation.End)
-    translate(spark.StringContains("str", "foo")) shouldEqual StringContains(3, "foo", StringLocation.Any)
+    translate(spark.EqualTo("str", "foo")) shouldEqual StringEquals(5, "foo")
+    translate(spark.EqualTo("str", 10)) shouldEqual StringEquals(5, "10")
+    translate(spark.LessThan("str", "foo")) shouldEqual StringLessThan(5, "foo")
+    translate(spark.LessThan("str", 10L)) shouldEqual StringLessThan(5, "10")
+    translate(spark.GreaterThan("str", "foo")) shouldEqual StringGreaterThan(5, "foo")
+    translate(spark.GreaterThan("str", 10)) shouldEqual StringGreaterThan(5, "10")
+    translate(spark.LessThanOrEqual("str", "foo")) shouldEqual Not(StringGreaterThan(5, "foo"))
+    translate(spark.GreaterThanOrEqual("str", "foo")) shouldEqual Not(StringLessThan(5, "foo"))
+    translate(spark.StringStartsWith("str", "foo")) shouldEqual StringContains(5, "foo", StringLocation.Start)
+    translate(spark.StringEndsWith("str", "foo")) shouldEqual StringContains(5, "foo", StringLocation.End)
+    translate(spark.StringContains("str", "foo")) shouldEqual StringContains(5, "foo", StringLocation.Any)
     translate(spark.In("str", Array("foo", "bar", 10))) shouldEqual Or(
-      StringEquals(3, "foo"),
-      StringEquals(3, "bar"),
-      StringEquals(3, "10"))
+      StringEquals(5, "foo"),
+      StringEquals(5, "bar"),
+      StringEquals(5, "10"))
   }
 
 }

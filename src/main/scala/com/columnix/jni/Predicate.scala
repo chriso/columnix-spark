@@ -20,6 +20,18 @@ private[columnix] class Predicate {
 
   @native def longLessThan(column: Int, value: Long): Pointer = ???
 
+  @native def floatEquals(column: Int, value: Float): Pointer = ???
+
+  @native def floatGreaterThan(column: Int, value: Float): Pointer = ???
+
+  @native def floatLessThan(column: Int, value: Float): Pointer = ???
+
+  @native def doubleEquals(column: Int, value: Double): Pointer = ???
+
+  @native def doubleGreaterThan(column: Int, value: Double): Pointer = ???
+
+  @native def doubleLessThan(column: Int, value: Double): Pointer = ???
+
   @native def stringEquals(column: Int, value: String,
                            caseSensitive: Boolean): Pointer = ???
 

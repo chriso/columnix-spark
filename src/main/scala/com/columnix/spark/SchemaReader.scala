@@ -24,6 +24,8 @@ case object SchemaReader {
       case ColumnType.Boolean => BooleanType
       case ColumnType.Int => IntegerType
       case ColumnType.Long => LongType
+      case ColumnType.Float => FloatType
+      case ColumnType.Double => DoubleType
       case ColumnType.String => StringType
     }
 }
