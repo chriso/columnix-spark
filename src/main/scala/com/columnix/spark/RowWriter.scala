@@ -9,6 +9,10 @@ import org.apache.spark.sql.types._
 case class RowWriter(path: String, schema: StructType,
                      parameters: Map[String, String]) extends OutputWriter {
 
+  // FIXME: these should be configurable
+  private[this] val sync = true
+  private[this] val compression = ColumnCompression.LZ4
+
   private[this] val writer = new FileWriter(path)
 
   private[this] val dataTypes = schema.fields map (_.dataType)
@@ -46,7 +50,7 @@ case class RowWriter(path: String, schema: StructType,
       case _ =>
         throw new RuntimeException(s"unsupported column type: $field")
     }
-    writer.addColumn(columnType, field.name, compression = ColumnCompression.LZ4)
+    writer.addColumn(columnType, field.name, compression = compression)
   }
 
   def write(row: Row): Unit = {
@@ -59,7 +63,7 @@ case class RowWriter(path: String, schema: StructType,
   }
 
   def close(): Unit = {
-    writer.finish(sync = true)
+    writer.finish(sync)
     writer.close()
   }
 }
