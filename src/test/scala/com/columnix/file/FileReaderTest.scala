@@ -115,4 +115,31 @@ class FileReaderTest extends Test {
     }
   }
 
+  it should "fail on type mismatch" in test { file =>
+    withWriter(file) { writer =>
+      writer.addColumn(ColumnType.Boolean, "bool")
+      writer.addColumn(ColumnType.Int, "int")
+      writer.addColumn(ColumnType.Long, "long")
+      writer.addColumn(ColumnType.Float, "float")
+      writer.addColumn(ColumnType.Double, "double")
+      writer.addColumn(ColumnType.String, "str")
+      writer.putBoolean(0, true)
+      writer.putInt(1, 10)
+      writer.putLong(2, 20L)
+      writer.putFloat(3, 3.3f)
+      writer.putDouble(4, 4.4)
+      writer.putString(5, "foo")
+      writer.finish()
+    }
+    withReader(file) { reader =>
+      a[RuntimeException] should be thrownBy reader.getBoolean(1)
+      a[RuntimeException] should be thrownBy reader.getInt(0)
+      a[RuntimeException] should be thrownBy reader.getLong(0)
+      a[RuntimeException] should be thrownBy reader.getFloat(0)
+      a[RuntimeException] should be thrownBy reader.getDouble(0)
+      a[RuntimeException] should be thrownBy reader.getString(0)
+      a[RuntimeException] should be thrownBy reader.getStringBytes(0)
+    }
+  }
+
 }

@@ -136,4 +136,31 @@ class FileWriterTest extends Test {
     }
   }
 
+  it should "fail on type mismatch" in test { file =>
+    withWriter(file) { writer =>
+      writer.addColumn(ColumnType.Boolean, "bool")
+      writer.addColumn(ColumnType.Int, "int")
+      writer.addColumn(ColumnType.Long, "long")
+      writer.addColumn(ColumnType.Float, "float")
+      writer.addColumn(ColumnType.Double, "double")
+      writer.addColumn(ColumnType.String, "str")
+
+      writer.putBoolean(0, true)
+      writer.putInt(1, 10)
+      writer.putLong(2, 20L)
+      writer.putFloat(3, 3.3f)
+      writer.putDouble(4, 4.4)
+      writer.putString(5, "foo")
+
+      a[RuntimeException] should be thrownBy writer.putBoolean(1, true)
+      a[RuntimeException] should be thrownBy writer.putInt(0, 10)
+      a[RuntimeException] should be thrownBy writer.putLong(0, 20L)
+      a[RuntimeException] should be thrownBy writer.putFloat(0, 3.3f)
+      a[RuntimeException] should be thrownBy writer.putDouble(0, 4.4)
+      a[RuntimeException] should be thrownBy writer.putString(0, "foo")
+
+      writer.finish()
+    }
+  }
+
 }
