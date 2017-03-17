@@ -1,5 +1,7 @@
 package com.columnix.file
 
+import java.nio.file.Path
+
 import com.columnix.Test
 import com.columnix.file.implicits._
 import com.columnix.jni._
@@ -7,6 +9,13 @@ import com.columnix.jni._
 class PredicateTranslator$Test extends Test {
 
   behavior of "PredicateTranslator$"
+
+  private def checkFilters[T: Getter](file: Path, tests: (Filter, Seq[T])*) =
+    for ((filter, expectedResult) <- tests) {
+      withReader(file, Some(filter)) { reader =>
+        reader.collect[T](0).flatten shouldEqual expectedResult
+      }
+    }
 
   it should "filter by boolean" in test { file =>
     withWriter(file) { writer =>
@@ -16,18 +25,11 @@ class PredicateTranslator$Test extends Test {
       writer.finish()
     }
 
-    val expected = Seq(
+    checkFilters(file,
       BooleanEquals(0, true) -> Seq(true),
       BooleanEquals(0, false) -> Seq(false),
       Or(BooleanEquals(0, false), BooleanEquals(0, true)) -> Seq(true, false),
-      And(BooleanEquals(0, false), BooleanEquals(0, true)) -> Nil
-    )
-
-    for ((filter, result) <- expected) {
-      withReader(file, Some(filter)) { reader =>
-        reader.collect[Boolean](0).flatten shouldEqual result
-      }
-    }
+      And(BooleanEquals(0, false), BooleanEquals(0, true)) -> Nil)
   }
 
   it should "filter by int" in test { file =>
@@ -38,21 +40,14 @@ class PredicateTranslator$Test extends Test {
       writer.finish()
     }
 
-    val expected = Seq(
+    checkFilters(file,
       IntEquals(0, 3) -> Seq(3),
       IntEquals(0, 999) -> Nil,
       Not(IntEquals(0, 3)) -> Seq(1, 2, 4, 5, 6, 7, 8, 9, 10),
       IntGreaterThan(0, 7) -> Seq(8, 9, 10),
       IntLessThan(0, 3) -> Seq(1, 2),
       Or(IntEquals(0, 3), IntEquals(0, 7), IntEquals(0, 9)) -> Seq(3, 7, 9),
-      And(IntGreaterThan(0, 3), IntLessThan(0, 7)) -> Seq(4, 5, 6)
-    )
-
-    for ((filter, result) <- expected) {
-      withReader(file, Some(filter)) { reader =>
-        reader.collect[Int](0).flatten shouldEqual result
-      }
-    }
+      And(IntGreaterThan(0, 3), IntLessThan(0, 7)) -> Seq(4, 5, 6))
   }
 
   it should "filter by long" in test { file =>
@@ -63,21 +58,14 @@ class PredicateTranslator$Test extends Test {
       writer.finish()
     }
 
-    val expected = Seq(
+    checkFilters(file,
       LongEquals(0, 3L) -> Seq(3L),
       LongEquals(0, 999L) -> Nil,
       Not(LongEquals(0, 3L)) -> Seq(1L, 2L, 4L, 5L, 6L, 7L, 8L, 9L, 10L),
       LongGreaterThan(0, 7L) -> Seq(8L, 9L, 10L),
       LongLessThan(0, 3L) -> Seq(1L, 2L),
       Or(LongEquals(0, 3L), LongEquals(0, 7L), LongEquals(0, 9L)) -> Seq(3L, 7L, 9L),
-      And(LongGreaterThan(0, 3L), LongLessThan(0, 7L)) -> Seq(4L, 5L, 6L)
-    )
-
-    for ((filter, result) <- expected) {
-      withReader(file, Some(filter)) { reader =>
-        reader.collect[Long](0).flatten shouldEqual result
-      }
-    }
+      And(LongGreaterThan(0, 3L), LongLessThan(0, 7L)) -> Seq(4L, 5L, 6L))
   }
 
   it should "filter by float" in test { file =>
@@ -88,21 +76,14 @@ class PredicateTranslator$Test extends Test {
       writer.finish()
     }
 
-    val expected = Seq(
+    checkFilters(file,
       FloatEquals(0, 3.3f) -> Seq(3.3f),
       FloatEquals(0, 999.9f) -> Nil,
       Not(FloatEquals(0, 3.3f)) -> Seq(1.1f, 2.2f, 4.4f, 5.5f, 6.6f, 7.7f, 8.8f, 9.9f, 10f),
       FloatGreaterThan(0, 7f) -> Seq(7.7f, 8.8f, 9.9f, 10f),
       FloatLessThan(0, 3f) -> Seq(1.1f, 2.2f),
       Or(FloatEquals(0, 3.3f), FloatEquals(0, 7.7f), FloatEquals(0, 9.9f)) -> Seq(3.3f, 7.7f, 9.9f),
-      And(FloatGreaterThan(0, 4f), FloatLessThan(0, 7.7f)) -> Seq(4.4f, 5.5f, 6.6f)
-    )
-
-    for ((filter, result) <- expected) {
-      withReader(file, Some(filter)) { reader =>
-        reader.collect[Float](0).flatten shouldEqual result
-      }
-    }
+      And(FloatGreaterThan(0, 4f), FloatLessThan(0, 7.7f)) -> Seq(4.4f, 5.5f, 6.6f))
   }
 
   it should "filter by double" in test { file =>
@@ -113,35 +94,25 @@ class PredicateTranslator$Test extends Test {
       writer.finish()
     }
 
-    val expected = Seq(
+    checkFilters(file,
       DoubleEquals(0, 3.3) -> Seq(3.3),
       DoubleEquals(0, 999.9) -> Nil,
       Not(DoubleEquals(0, 3.3)) -> Seq(1.1, 2.2, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10),
       DoubleGreaterThan(0, 7) -> Seq(7.7, 8.8, 9.9, 10),
       DoubleLessThan(0, 3) -> Seq(1.1, 2.2),
       Or(DoubleEquals(0, 3.3), DoubleEquals(0, 7.7), DoubleEquals(0, 9.9)) -> Seq(3.3, 7.7, 9.9),
-      And(DoubleGreaterThan(0, 4), DoubleLessThan(0, 7.7)) -> Seq(4.4, 5.5, 6.6)
-    )
-
-    for ((filter, result) <- expected) {
-      withReader(file, Some(filter)) { reader =>
-        reader.collect[Double](0).flatten shouldEqual result
-      }
-    }
+      And(DoubleGreaterThan(0, 4), DoubleLessThan(0, 7.7)) -> Seq(4.4, 5.5, 6.6))
   }
 
   it should "filter by string" in test { file =>
     withWriter(file) { writer =>
       writer.addColumn(ColumnType.String, "foo")
-      writer.putString(0, "a")
-      writer.putString(0, "b")
-      writer.putString(0, "c")
-      writer.putString(0, "foo")
-      writer.putString(0, "FOO")
+      for (str <- Seq("a", "b", "c", "foo", "FOO"))
+        writer.putString(0, str)
       writer.finish()
     }
 
-    val expected = Seq(
+    checkFilters(file,
       StringEquals(0, "foo") -> Seq("foo"),
       StringEquals(0, "foo", caseSensitive = false) -> Seq("foo", "FOO"),
       StringEquals(0, "bar") -> Nil,
@@ -160,14 +131,7 @@ class PredicateTranslator$Test extends Test {
       StringContains(0, "foo", StringLocation.Any) -> Seq("foo"),
       StringContains(0, "foo", StringLocation.Any, caseSensitive = false) -> Seq("foo", "FOO"),
       StringContains(0, "f", StringLocation.Any) -> Seq("foo"),
-      StringContains(0, "o", StringLocation.Any) -> Seq("foo")
-    )
-
-    for ((filter, result) <- expected) {
-      withReader(file, Some(filter)) { reader =>
-        reader.collect[String](0).flatten shouldEqual result
-      }
-    }
+      StringContains(0, "o", StringLocation.Any) -> Seq("foo"))
   }
 
   it should "filter nulls" in test { file =>
